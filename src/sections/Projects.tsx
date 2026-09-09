@@ -1,4 +1,4 @@
-import { ArrowUpRight, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import { projects } from '../data/portfolio'
 import { ProjectArtwork } from '../components/ui/ProjectArtwork'
 import { Reveal } from '../components/ui/Reveal'
@@ -28,19 +28,19 @@ export function Projects() {
               key={project.number}
               aria-labelledby={`project-${project.number}`}
             >
-              <Reveal className="project-visual">
-                <div className="project-visual-top eyebrow">
-                  <span>Study / {project.number}</span>
-                  <ArrowUpRight size={18} aria-hidden="true" />
+              <div className="project-index">
+                <span className="project-index-number" aria-label={`Study ${project.number}`}>{project.number}</span>
+                <div className="project-index-meta eyebrow">
+                  <span>{project.focus.slice(0, 2).join(' / ')}</span>
+                  <span>Conceptual system study</span>
                 </div>
+              </div>
+              <Reveal className="project-visual" variant="image">
                 <ProjectArtwork kind={project.kind} />
-                <span className="project-visual-caption eyebrow">
-                  Conceptual system study
-                </span>
               </Reveal>
               <div className="project-copy">
                 <p className="eyebrow project-number">
-                  {project.number} / {project.status}
+                  {project.status}
                 </p>
                 <h3 id={`project-${project.number}`}>{project.title}</h3>
                 <p className="project-description">{project.description}</p>

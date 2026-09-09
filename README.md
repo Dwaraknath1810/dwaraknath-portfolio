@@ -23,13 +23,12 @@ Use the committed `package-lock.json` with `npm ci` for reproducible installatio
 
 Edit `src/data/portfolio.ts` for identity, navigation, expertise, projects, experience, technical capabilities, philosophy, and contact details.
 
-Replace these exact values in `contactLinks`:
+The two contact methods are centralized in `contactLinks`:
 
-- `YOUR_EMAIL` — a plain email address.
-- `YOUR_LINKEDIN_URL` — a complete HTTPS LinkedIn URL.
-- `YOUR_GITHUB_URL` — a complete HTTPS GitHub URL.
+- Email: `dwaraknath.balaji@gmail.com`.
+- GitHub: `https://github.com/Dwaraknath1810`.
 
-Unconfigured values appear as text, so placeholder addresses never navigate to broken pages. Valid replacements activate automatically. External links open in a new tab with `noopener noreferrer`.
+The email address is displayed in full and opens a `mailto:` link. The GitHub profile is displayed without the URL scheme and opens in a new tab with `noopener noreferrer`. Updating either value in the data file updates its display and destination together.
 
 The three work entries are explicitly labeled **Project direction**, with conceptual illustrations and expandable approaches. Replace these with substantiated case studies when actual project material is available. No dates, metrics, client claims, or repository URLs were inferred.
 
@@ -93,11 +92,12 @@ Generated `node_modules/`, `dist/`, `.npm-cache/`, and `.qa/` are ignored by Git
 - Charcoal `#101112`, off-white `#eeefec`, secondary gray `#969b9f`, fine borders `#303336`, metallic blue `#abc2d4`.
 - One self-hosted Manrope variable font, limited to the Latin WOFF2 file. No remote font requests.
 - CSS tokens cover surfaces, colors, spacing, content width, gutters, and responsive type. Tailwind's Vite integration supplies utility styles.
-- Hero uses responsive JPEG sources, explicit dimensions, a high-priority fetch, CSS monochrome treatment, and responsive object positioning. Neither original PNG is rewritten.
-- Expertise is a numbered native disclosure index. Projects use three CSS technical compositions, alternate desktop placement, and native expandable approaches.
+- Hero uses responsive JPEG sources, explicit dimensions, a high-priority fetch, CSS monochrome treatment, and responsive object positioning. Masked headline lines overlap a wider portrait frame; mobile uses its own title placement and crop. Neither original PNG is rewritten.
+- Expertise is a numbered native disclosure index. Projects use large chapter numbers, varied desktop proportions, and native expandable approaches. Their CSS illustrations depict semantic retrieval, structured tool execution, and source-to-response evidence.
 - Experience omits unprovided dates. Capabilities use four typographic groups. A silver-blue philosophy section presents the four-step engineering loop.
 - Below 1024px navigation becomes a keyboard-accessible disclosure. Below 641px the hero is recomposed, projects stack, and content spacing changes. Tablet capabilities use two columns.
-- Framer Motion handles one-time hero and section entrances through `LazyMotion`. Hover movement stays subtle; no continuous animation, springs, GSAP, or animation timers.
+- Navigation follows the current section with `aria-current` and a discreet underline. The header gains definition after scrolling; the mobile menu closes on Escape, selection, or keyboard focus leaving the header.
+- Framer Motion handles one-time headline masks, image reveals, section entrances, and a hero rule reveal through `LazyMotion`. Hover movement stays subtle; no continuous animation, springs, GSAP, or animation timers.
 
 ## Accessibility and verification
 
@@ -109,8 +109,8 @@ The optional browser check uses the existing macOS Google Chrome installation an
 node scripts/browser-check.mjs
 ```
 
-Set `PORTFOLIO_URL` to the URL printed by a different local server when needed. Browser output and screenshots are saved in `.qa/`. The check covers representative desktop, laptop, tablet, and mobile widths, overflow, images, navigation, disclosures, reduced motion, and runtime errors. This is targeted verification, not a comprehensive assistive-technology audit.
+Set `PORTFOLIO_URL` to the URL printed by a different local server when needed. Browser output and screenshots are saved in `.qa/`. The check covers 320, 390, 430, 768, 1024, 1280, 1440, and 1920px widths, overflow, images, active navigation, contact destinations, disclosures, reduced motion, and runtime errors. Normal-motion entrances and keyboard activation are also checked from a fresh page load. This is targeted verification, not a comprehensive assistive-technology audit.
 
 ## Scope
 
-This is a local static portfolio. Contact details remain owner-supplied placeholders. Project artwork is conceptual, and the page includes no contact form or fabricated case-study destinations. Social metadata has no invented production URL or image. No GitHub repository, remote, credentials, or hosting is configured.
+This is a local static portfolio. Contact methods use the owner's supplied email and GitHub profile. Project artwork is conceptual, and the page includes no contact form or fabricated case-study destinations. Social metadata has no invented production URL or image. No GitHub repository, remote, credentials, or hosting is configured.

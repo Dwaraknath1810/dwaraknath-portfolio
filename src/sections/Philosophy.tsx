@@ -19,7 +19,7 @@ export function Philosophy() {
             as the loop that improves it.
           </h2>
         </div>
-        <Reveal>
+        <Reveal variant="mask">
           <ol className="philosophy-list">
             {philosophy.map((principle, index) => (
               <li key={principle.word}>

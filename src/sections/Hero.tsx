@@ -22,10 +22,10 @@ export function Hero() {
         <m.figure
           className="hero-portrait"
           initial={
-            reduced ? false : { opacity: 0, clipPath: 'inset(6% 0 0 0)' }
+            reduced ? false : { opacity: 0.5, clipPath: 'inset(0 0 18% 0)' }
           }
           animate={{ opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
-          transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: reduced ? 0 : 1.15, ease: [0.22, 1, 0.36, 1] }}
         >
           <img
             src={portrait}
@@ -43,17 +43,24 @@ export function Hero() {
         </m.figure>
         <div className="hero-copy">
           <p className="hero-name eyebrow">{identity.name}</p>
-          <m.h1
-            id="hero-title"
-            initial={reduced ? false : { opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
-          >
-            <span>AI</span>
-            <span>
-              ENGINEER<span className="hero-period">.</span>
+          <h1 id="hero-title">
+            <span className="hero-title-line">
+              <m.span
+                className="hero-title-word"
+                initial={reduced ? false : { y: '105%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: reduced ? 0 : 0.95, ease: [0.22, 1, 0.36, 1] }}
+              >AI</m.span>
             </span>
-          </m.h1>
+            <span className="hero-title-line">
+              <m.span
+                className="hero-title-word"
+                initial={reduced ? false : { y: '105%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: reduced ? 0 : 1.05, delay: reduced ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
+              >ENGINEER<span className="hero-period">.</span></m.span>
+            </span>
+          </h1>
           <div className="hero-intro">
             <p>{identity.positioning}</p>
             <div className="hero-links flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -71,6 +78,13 @@ export function Hero() {
         </div>
       </div>
       <div className="hero-bottom eyebrow">
+        <m.span
+          className="hero-rule"
+          aria-hidden="true"
+          initial={reduced ? false : { scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+        />
         <p>{identity.supportingLine}</p>
         <a href="#about">
           Scroll to explore <ArrowDown size={14} aria-hidden="true" />

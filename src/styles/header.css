@@ -3,10 +3,17 @@
   z-index: 50;
   inset: 0 0 auto;
   color: #eeefec;
-  background: rgb(16 17 18 / 92%);
-  border-bottom: 1px solid rgb(238 239 236 / 9%);
+  background: rgb(16 17 18 / 80%);
+  border-bottom: 1px solid rgb(238 239 236 / 6%);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
+  transition: background-color 360ms ease, border-color 360ms ease, box-shadow 360ms ease;
+}
+
+.site-header[data-scrolled] {
+  background: rgb(16 17 18 / 96%);
+  border-bottom-color: rgb(238 239 236 / 13%);
+  box-shadow: 0 8px 28px rgb(0 0 0 / 9%);
 }
 
 .site-header__inner {
@@ -74,22 +81,30 @@
   font-weight: 400;
   line-height: 1.4;
   letter-spacing: 0.15px;
-  transition: color 220ms ease;
+  transition: color 280ms ease;
 }
 
 .nav-desktop__link::after {
   content: '';
   position: absolute;
   height: 1px;
-  inset: auto 0 6px;
+  inset: auto 0 5px;
   background: #abc2d4;
   transform: scaleX(0);
   transform-origin: left;
-  transition: transform 240ms ease;
+  transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .nav-desktop__link svg {
-  transition: transform 240ms ease;
+  transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nav-desktop__link[aria-current='location'] {
+  color: #abc2d4;
+}
+
+.nav-desktop__link[aria-current='location']::after {
+  transform: scaleX(0.34);
 }
 
 .nav-desktop__link:hover,
@@ -153,10 +168,11 @@
     padding: 14px clamp(22px, 5vw, 88px) 25px;
     background: #101112;
     border-top: 1px solid rgb(238 239 236 / 9%);
-    animation: nav-reveal 220ms ease both;
+    animation: nav-reveal 360ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   .nav-mobile > a {
+    position: relative;
     display: flex;
     align-items: center;
     gap: 20px;
@@ -165,11 +181,29 @@
     border-bottom: 1px solid rgb(238 239 236 / 10%);
     font-size: clamp(20px, 3vw, 27px);
     letter-spacing: -0.5px;
-    transition: color 200ms ease;
+    transition: color 280ms ease, border-color 280ms ease;
   }
 
-  .nav-mobile > a:hover {
+  .nav-mobile > a::after {
+    position: absolute;
+    bottom: -1px;
+    left: 31px;
+    width: 24px;
+    height: 1px;
+    content: '';
+    background: #abc2d4;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-mobile > a:hover,
+  .nav-mobile > a[aria-current='location'] {
     color: #abc2d4;
+  }
+
+  .nav-mobile > a[aria-current='location']::after {
+    transform: scaleX(1);
   }
 
   .nav-mobile__index {
@@ -181,6 +215,12 @@
   .nav-mobile__arrow {
     margin-left: auto;
     color: #abc2d4;
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .nav-mobile > a:hover .nav-mobile__arrow,
+  .nav-mobile > a:focus-visible .nav-mobile__arrow {
+    transform: translate(2px, -2px);
   }
 
   .nav-mobile__signature {
@@ -201,15 +241,18 @@
 @keyframes nav-reveal {
   from {
     opacity: 0;
-    transform: translateY(-6px);
+    transform: translateY(-8px);
+    clip-path: inset(0 0 16px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
+    clip-path: inset(0);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .site-header,
   .site-header *,
   .site-header *::after {
     animation: none;

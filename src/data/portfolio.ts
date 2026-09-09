@@ -49,7 +49,7 @@ export interface PhilosophyPrinciple {
 }
 
 export interface ContactLink {
-  readonly label: 'Email' | 'LinkedIn' | 'GitHub'
+  readonly label: 'Email' | 'GitHub'
   readonly value: string
 }
 
@@ -234,9 +234,8 @@ export const philosophy: readonly PhilosophyPrinciple[] = [
   { word: 'EVALUATE', description: 'Measure whether the system is actually reliable.' },
 ]
 
-// Replace these three values to activate contact links in the site.
+// Contact values are kept here so the displayed details and links stay in sync.
 export const contactLinks: readonly ContactLink[] = [
-  { label: 'Email', value: 'YOUR_EMAIL' },
-  { label: 'LinkedIn', value: 'YOUR_LINKEDIN_URL' },
-  { label: 'GitHub', value: 'YOUR_GITHUB_URL' },
+  { label: 'Email', value: 'dwaraknath.balaji@gmail.com' },
+  { label: 'GitHub', value: 'https://github.com/Dwaraknath1810' },
 ]

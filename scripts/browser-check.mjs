@@ -12,7 +12,9 @@ const viewports = [
   { width: 1920, height: 1080 },
   { width: 1440, height: 1000 },
   { width: 1280, height: 832 },
+  { width: 1024, height: 900 },
   { width: 768, height: 1024 },
+  { width: 430, height: 932 },
   { width: 390, height: 844 },
   { width: 320, height: 740 },
 ]
@@ -212,6 +214,34 @@ async function inspectInteractions(send, result) {
     addCheck(result, `${selector} native disclosure opens and closes`, state.found && state.toggled && state.restored, state)
   }
 
+  const contacts = await evaluate(send, `(() => {
+    const links = [...document.querySelectorAll('.contact-links a')];
+    return links.map(link => ({
+      label: link.querySelector('span')?.firstChild?.textContent.trim(),
+      display: link.querySelector('small')?.textContent.trim(),
+      href: link.getAttribute('href'),
+      target: link.getAttribute('target'),
+      rel: link.getAttribute('rel')
+    }));
+  })()`)
+  addCheck(result, 'Email and GitHub are the only contact methods',
+    contacts.length === 2 && contacts[0].label === 'Email' && contacts[1].label === 'GitHub', contacts)
+  addCheck(result, 'Email displays its complete mailto address',
+    contacts[0]?.href === `mailto:${contacts[0]?.display}` && contacts[0]?.display.includes('@'))
+  addCheck(result, 'GitHub display, HTTPS destination, and external-link protections agree',
+    contacts[1]?.href === `https://${contacts[1]?.display}` && contacts[1]?.href.startsWith('https://github.com/')
+    && contacts[1]?.target === '_blank' && contacts[1]?.rel?.split(' ').includes('noopener')
+    && contacts[1]?.rel?.split(' ').includes('noreferrer'))
+
+  await evaluate(send, `document.querySelector('#work').scrollIntoView({ behavior: 'instant' })`)
+  await sleep(120)
+  const sectionFeedback = await evaluate(send, `({
+    active: document.querySelector('.nav-desktop [aria-current="location"]')?.getAttribute('href'),
+    scrolled: document.querySelector('.site-header').dataset.scrolled
+  })`)
+  addCheck(result, 'Header tracks the current section and scroll state',
+    sectionFeedback.active === '#work' && sectionFeedback.scrolled === 'true', sectionFeedback)
+
   const menuVisible = await evaluate(send, `getComputedStyle(document.querySelector('.nav-toggle')).display !== 'none'`)
   addCheck(result, 'Responsive navigation breakpoint', menuVisible === (result.width < 1024))
 
@@ -362,11 +392,16 @@ try {
   const entrance = await evaluate(send, `({
     reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
     titleOpacity: getComputedStyle(document.querySelector('#hero-title')).opacity,
+    titleLinesSettled: [...document.querySelectorAll('.hero-title-word')].every(line => {
+      const transform = getComputedStyle(line).transform;
+      return transform === 'none' || new DOMMatrix(transform).m42 === 0;
+    }),
     portraitOpacity: getComputedStyle(document.querySelector('.hero-portrait')).opacity,
     scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior
   })`)
   addCheck(report.standardMotion, 'Normal-motion hero finishes visibly and enables smooth scrolling',
-    !entrance.reduced && entrance.titleOpacity === '1' && entrance.portraitOpacity === '1' && entrance.scrollBehavior === 'smooth', entrance)
+    !entrance.reduced && entrance.titleOpacity === '1' && entrance.titleLinesSettled
+    && entrance.portraitOpacity === '1' && entrance.scrollBehavior === 'smooth', entrance)
 
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
   await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
@@ -386,6 +421,10 @@ try {
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: ' ', code: 'Space', windowsVirtualKeyCode: 32, text: ' ', unmodifiedText: ' ' })
   await send('Input.dispatchKeyEvent', { type: 'keyUp', key: ' ', code: 'Space', windowsVirtualKeyCode: 32 })
   addCheck(report.standardMotion, 'Space closes expertise disclosure using the keyboard', await evaluate(send, `!document.querySelector('.expertise-row').open`))
+  await evaluate(send, `document.querySelector('.project-details summary').focus()`)
+  await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' })
+  await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
+  addCheck(report.standardMotion, 'Project approach opens through keyboard activation', await evaluate(send, `document.querySelector('.project-details').open`))
   report.standardMotion.passed = report.standardMotion.checks.every(check => check.passed)
   console.log(`Standard motion and keyboard: ${report.standardMotion.passed ? 'PASS' : 'FAIL'}`)
 

@@ -5,7 +5,64 @@ import '../../styles/header.css'
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState<string | null>(null)
+  const [scrolled, setScrolled] = useState(false)
   const toggleRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    const sections = navigation.flatMap(({ id }) => {
+      const element = document.getElementById(id)
+      return element ? [{ id, element }] : []
+    })
+    let frame = 0
+    let previousSection: string | null = null
+    let previousScrolled = false
+
+    const updateNavigation = () => {
+      frame = 0
+      const nextScrolled = window.scrollY > 24
+      const readingLine = Math.min(window.innerHeight * 0.3, 220)
+      let nextSection: string | null = null
+
+      for (const section of sections) {
+        if (section.element.getBoundingClientRect().top > readingLine) break
+        nextSection = section.id
+      }
+      if (
+        nextScrolled &&
+        window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2
+      ) {
+        nextSection = sections.at(-1)?.id ?? null
+      }
+
+      // State changes only when a section boundary or the header threshold changes.
+      if (nextSection !== previousSection) {
+        previousSection = nextSection
+        setActiveSection(nextSection)
+      }
+      if (nextScrolled !== previousScrolled) {
+        previousScrolled = nextScrolled
+        setScrolled(nextScrolled)
+      }
+    }
+    const scheduleUpdate = () => {
+      if (!frame) frame = window.requestAnimationFrame(updateNavigation)
+    }
+
+    window.addEventListener('scroll', scheduleUpdate, { passive: true })
+    window.addEventListener('resize', scheduleUpdate)
+    const resizeObserver = new ResizeObserver(scheduleUpdate)
+    const main = document.getElementById('main-content')
+    if (main) resizeObserver.observe(main)
+    scheduleUpdate()
+
+    return () => {
+      window.removeEventListener('scroll', scheduleUpdate)
+      window.removeEventListener('resize', scheduleUpdate)
+      resizeObserver.disconnect()
+      window.cancelAnimationFrame(frame)
+    }
+  }, [])
 
   useEffect(() => {
     const desktopQuery = window.matchMedia('(min-width: 1024px)')
@@ -31,7 +88,15 @@ export function Header() {
   }, [menuOpen])
 
   return (
-    <header className="site-header">
+    <header
+      className="site-header"
+      data-scrolled={scrolled || menuOpen ? true : undefined}
+      onBlur={(event) => {
+        if (menuOpen && !event.currentTarget.contains(event.relatedTarget)) {
+          setMenuOpen(false)
+        }
+      }}
+    >
       <div className="site-header__inner">
         <a
           className="site-header__identity"
@@ -47,7 +112,12 @@ export function Header() {
 
         <nav className="nav-desktop" aria-label="Main navigation">
           {navigation.map(({ id, label }) => (
-            <a className="nav-desktop__link" href={`#${id}`} key={id}>
+            <a
+              className="nav-desktop__link"
+              href={`#${id}`}
+              key={id}
+              aria-current={activeSection === id ? 'location' : undefined}
+            >
               <span>{label}</span>
               {id === 'contact' && <ArrowUpRight size={13} aria-hidden="true" />}
             </a>
@@ -71,7 +141,12 @@ export function Header() {
       {menuOpen && (
         <nav id="mobile-navigation" className="nav-mobile" aria-label="Mobile navigation">
           {navigation.map(({ id, label }, index) => (
-            <a href={`#${id}`} key={id} onClick={() => setMenuOpen(false)}>
+            <a
+              href={`#${id}`}
+              key={id}
+              aria-current={activeSection === id ? 'location' : undefined}
+              onClick={() => setMenuOpen(false)}
+            >
               <span className="nav-mobile__index" aria-hidden="true">
                 {String(index + 1).padStart(2, '0')}
               </span>
@@ -79,7 +154,9 @@ export function Header() {
               <ArrowUpRight className="nav-mobile__arrow" size={19} aria-hidden="true" />
             </a>
           ))}
-          <p className="nav-mobile__signature">{identity.role} / {identity.location}</p>
+          <p className="nav-mobile__signature">
+            {identity.role} / {identity.location}
+          </p>
         </nav>
       )}
     </header>
