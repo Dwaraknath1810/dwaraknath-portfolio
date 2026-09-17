@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
-import { identity, navigation, sectionIds } from '../../data/portfolio'
+import { identity, navigation } from '../../data/portfolio'
 import '../../styles/header.css'
 
 export function Header() {
@@ -46,20 +46,20 @@ export function Header() {
       }
     }
     const scheduleUpdate = () => {
-      if (!document.hidden && !frame) frame = window.requestAnimationFrame(updateNavigation)
+      if (!frame) frame = window.requestAnimationFrame(updateNavigation)
     }
 
     window.addEventListener('scroll', scheduleUpdate, { passive: true })
     window.addEventListener('resize', scheduleUpdate)
-    const resizeObserver = 'ResizeObserver' in window ? new ResizeObserver(scheduleUpdate) : null
+    const resizeObserver = new ResizeObserver(scheduleUpdate)
     const main = document.getElementById('main-content')
-    if (main) resizeObserver?.observe(main)
+    if (main) resizeObserver.observe(main)
     scheduleUpdate()
 
     return () => {
       window.removeEventListener('scroll', scheduleUpdate)
       window.removeEventListener('resize', scheduleUpdate)
-      resizeObserver?.disconnect()
+      resizeObserver.disconnect()
       window.cancelAnimationFrame(frame)
     }
   }, [])
@@ -124,10 +124,6 @@ export function Header() {
           ))}
         </nav>
 
-        <details className="fallback-navigation">
-          <summary>Menu</summary>
-          <nav aria-label="Navigation">{navigation.map(({ id, label }) => <a key={id} href={`#${id}`}>{label}</a>)}</nav>
-        </details>
         <button
           ref={toggleRef}
           className="nav-toggle"
@@ -144,20 +140,15 @@ export function Header() {
 
       {menuOpen && (
         <nav id="mobile-navigation" className="nav-mobile" aria-label="Mobile navigation">
-          {navigation.map(({ id, label }) => (
+          {navigation.map(({ id, label }, index) => (
             <a
               href={`#${id}`}
               key={id}
               aria-current={activeSection === id ? 'location' : undefined}
-              onClick={() => {
-                setMenuOpen(false)
-                const target = document.getElementById(id)
-                target?.setAttribute('tabindex', '-1')
-                target?.focus({ preventScroll: true })
-              }}
+              onClick={() => setMenuOpen(false)}
             >
               <span className="nav-mobile__index" aria-hidden="true">
-                {String(sectionIds.indexOf(id)).padStart(2, '0')}
+                {String(index + 1).padStart(2, '0')}
               </span>
               <span>{label}</span>
               <ArrowUpRight className="nav-mobile__arrow" size={19} aria-hidden="true" />

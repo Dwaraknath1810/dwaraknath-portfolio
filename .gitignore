@@ -24,8 +24,3 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-
-.prerender
-.env
-.env.*
-!.env.example

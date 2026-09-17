@@ -7,7 +7,7 @@ export interface Identity {
 }
 
 export interface NavigationItem {
-  readonly id: Exclude<SectionId, 'top'>
+  readonly id: 'about' | 'expertise' | 'work' | 'experience' | 'philosophy' | 'contact'
   readonly label: string
 }
 
@@ -19,58 +19,23 @@ export interface ExpertiseArea {
 
 export type ProjectKind = 'retrieval' | 'agents' | 'evaluation'
 
-export type WebUrl = `https://${string}`
-export type CaseStudyUrl = WebUrl | `/${string}`
-
-export interface ProjectMedia {
-  readonly src: string
-  readonly alt: string
-  readonly width: number
-  readonly height: number
-  readonly caption?: string
-}
-
 export interface Project {
   readonly number: string
   readonly title: string
   readonly description: string
   readonly focus: readonly string[]
   readonly kind: ProjectKind
-  readonly status: 'Project direction' | 'In progress' | 'Completed'
-  readonly projectType?: string
-  readonly objective?: string
-  readonly context?: string
-  readonly role?: string
-  readonly responsibilities?: readonly string[]
-  readonly architecture?: string
-  readonly technicalApproach?: readonly string[]
-  readonly decisions?: readonly string[]
-  readonly constraints?: readonly string[]
-  readonly challenges?: readonly string[]
-  readonly evaluation?: string
-  readonly outcomes?: readonly string[]
-  readonly stack?: readonly string[]
-  readonly media?: readonly ProjectMedia[]
-  readonly repositoryUrl?: WebUrl
-  readonly demoUrl?: WebUrl
-  readonly caseStudyUrl?: CaseStudyUrl
+  readonly status: 'Project direction'
+  readonly detail: {
+    readonly approach: readonly string[]
+  }
 }
 
 export interface ExperienceEntry {
   readonly company: string
-  readonly primaryRole: string
-  readonly additionalRoles?: readonly string[]
-  readonly current: boolean
-  // ISO year-month, or ISO full date. Omit when not supplied.
-  readonly startDate?: string
-  readonly endDate?: string
-  readonly location?: string
-  readonly summary?: string
-  readonly responsibilities?: readonly string[]
-  readonly contributions?: readonly string[]
-  readonly highlights?: readonly string[]
-  readonly technologies?: readonly string[]
-  readonly companyUrl?: WebUrl
+  readonly roles: readonly string[]
+  readonly focus: readonly string[]
+  readonly previous: boolean
 }
 
 export interface CapabilityGroup {
@@ -83,19 +48,10 @@ export interface PhilosophyPrinciple {
   readonly description: string
 }
 
-interface ContactBase {
-  readonly id: string
-  readonly label: string
-  readonly displayValue: string
-  readonly accessibleLabel: string
+export interface ContactLink {
+  readonly label: 'Email' | 'GitHub'
+  readonly value: string
 }
-export type ContactLink = ContactBase & (
-  | { readonly kind: 'email'; readonly href: `mailto:${string}`; readonly external: false }
-  | { readonly kind: 'profile'; readonly href: WebUrl; readonly external: true }
-)
-
-export const sectionIds = ['top', 'about', 'expertise', 'work', 'experience', 'capabilities', 'philosophy', 'contact'] as const
-export type SectionId = typeof sectionIds[number]
 
 export const identity: Identity = {
   name: 'DWARAKNATH BALAJI',
@@ -169,11 +125,13 @@ export const projects: readonly Project[] = [
     focus: ['RAG', 'Semantic Search', 'LLM Evaluation', 'Knowledge Bases'],
     kind: 'retrieval',
     status: 'Project direction',
-    technicalApproach: [
-      'Explore how document knowledge can be organized for relevant retrieval.',
-      'Connect retrieved context to answer generation grounded in source material.',
-      'Evaluate retrieval relevance and answer quality as connected parts of the system.',
-    ],
+    detail: {
+      approach: [
+        'Explore how document knowledge can be organized for relevant retrieval.',
+        'Connect retrieved context to answer generation grounded in source material.',
+        'Evaluate retrieval relevance and answer quality as connected parts of the system.',
+      ],
+    },
   },
   {
     number: '02',
@@ -183,11 +141,13 @@ export const projects: readonly Project[] = [
     focus: ['Agentic AI', 'LLMs', 'Tool Use', 'Workflow Engineering'],
     kind: 'agents',
     status: 'Project direction',
-    technicalApproach: [
-      'Explore how reasoning can guide a structured sequence of workflow steps.',
-      'Connect language model decisions to tool usage and execution.',
-      'Consider how each step contributes to a useful, coherent automated workflow.',
-    ],
+    detail: {
+      approach: [
+        'Explore how reasoning can guide a structured sequence of workflow steps.',
+        'Connect language model decisions to tool usage and execution.',
+        'Consider how each step contributes to a useful, coherent automated workflow.',
+      ],
+    },
   },
   {
     number: '03',
@@ -197,32 +157,41 @@ export const projects: readonly Project[] = [
     focus: ['Evaluation', 'RAG Testing', 'Groundedness', 'Reliability'],
     kind: 'evaluation',
     status: 'Project direction',
-    technicalApproach: [
-      'Examine whether retrieved context is relevant to the question.',
-      'Assess correctness and whether responses are supported by their source material.',
-      'Study hallucination behavior and response quality to inform system reliability.',
-    ],
+    detail: {
+      approach: [
+        'Examine whether retrieved context is relevant to the question.',
+        'Assess correctness and whether responses are supported by their source material.',
+        'Study hallucination behavior and response quality to inform system reliability.',
+      ],
+    },
   },
 ]
 
 export const experience: readonly ExperienceEntry[] = [
   {
     company: 'PHOENIX ICT SOLUTIONS',
-    primaryRole: 'AI / ML Engineer',
-    current: true,
-    summary: 'AI engineering across retrieval, language model systems, evaluation, and frontend / product engineering.',
+    roles: ['AI / ML Engineer'],
+    focus: [
+      'AI engineering',
+      'RAG',
+      'LLM systems',
+      'Evaluation',
+      'Frontend / product engineering',
+    ],
+    previous: false,
   },
   {
     company: 'ZSCALER',
-    primaryRole: 'Associate SDE — Platform Engineering',
-    additionalRoles: ['QA Engineer Intern'],
-    current: false,
-    contributions: [
-      'RAG dataset creation and RAG / LLM engineering.',
-      'OAuth / RBAC repository visibility and Tree-Sitter multi-language support.',
-      'Locust load testing and Jenkins CI/CD.',
+    roles: ['QA Engineer Intern', 'Associate SDE — Platform Engineering'],
+    focus: [
+      'RAG dataset creation',
+      'OAuth / RBAC repository visibility',
+      'Tree-Sitter multi-language support',
+      'RAG / LLM engineering',
+      'Locust load testing',
+      'Jenkins CI/CD',
     ],
-    technologies: ['OAuth', 'RBAC', 'Tree-Sitter', 'Locust', 'Jenkins'],
+    previous: true,
   },
 ]
 
@@ -265,8 +234,8 @@ export const philosophy: readonly PhilosophyPrinciple[] = [
   { word: 'EVALUATE', description: 'Measure whether the system is actually reliable.' },
 ]
 
-// Destinations and new-tab behavior are explicit, independent of visible labels.
+// Contact values are kept here so the displayed details and links stay in sync.
 export const contactLinks: readonly ContactLink[] = [
-  { id: 'email', kind: 'email', label: 'Email', href: 'mailto:dwaraknath.balaji@gmail.com', displayValue: 'dwaraknath.balaji@gmail.com', external: false, accessibleLabel: 'Email Dwaraknath Balaji' },
-  { id: 'github', kind: 'profile', label: 'GitHub', href: 'https://github.com/Dwaraknath1810', displayValue: 'github.com/Dwaraknath1810', external: true, accessibleLabel: 'Dwaraknath Balaji on GitHub (opens in a new tab)' },
+  { label: 'Email', value: 'dwaraknath.balaji@gmail.com' },
+  { label: 'GitHub', value: 'https://github.com/Dwaraknath1810' },
 ]
