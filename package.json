@@ -5,20 +5,24 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "typecheck": "tsc -b",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "build": "npm run typecheck && node scripts/build.mjs",
+    "preview": "vite preview",
+    "test": "node --test scripts/*.test.mjs",
+    "check": "npm run typecheck && npm run lint && npm run build && npm test",
+    "qa:browser": "node scripts/browser-check.mjs",
+    "assets:portraits": "node scripts/optimize-images.mjs",
+    "size": "node scripts/measure.mjs"
   },
   "dependencies": {
     "@fontsource-variable/manrope": "^5.3.0",
-    "framer-motion": "^13.2.0",
     "lucide-react": "^1.43.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@tailwindcss/vite": "^4.3.3",
     "@types/node": "^24.13.3",
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
@@ -27,9 +31,12 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.4",
     "globals": "^17.11.0",
-    "tailwindcss": "^4.3.3",
+    "sharp": "^0.35.4",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.67.0",
     "vite": "^8.2.2"
+  },
+  "engines": {
+    "node": ">=22.12.0"
   }
 }

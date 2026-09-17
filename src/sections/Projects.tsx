@@ -1,4 +1,4 @@
-import { Plus } from 'lucide-react'
+import { ProjectDetails } from '../components/ui/ProjectDetails'
 import { projects } from '../data/portfolio'
 import { ProjectArtwork } from '../components/ui/ProjectArtwork'
 import { Reveal } from '../components/ui/Reveal'
@@ -31,8 +31,8 @@ export function Projects() {
               <div className="project-index">
                 <span className="project-index-number" aria-label={`Study ${project.number}`}>{project.number}</span>
                 <div className="project-index-meta eyebrow">
-                  <span>{project.focus.slice(0, 2).join(' / ')}</span>
-                  <span>Conceptual system study</span>
+                  {project.focus.length > 0 && <span>{project.focus.slice(0, 2).join(' / ')}</span>}
+                  <span>{project.projectType ?? (project.status === 'Project direction' ? 'Conceptual system study' : project.status)}</span>
                 </div>
               </div>
               <Reveal className="project-visual" variant="image">
@@ -44,21 +44,12 @@ export function Projects() {
                 </p>
                 <h3 id={`project-${project.number}`}>{project.title}</h3>
                 <p className="project-description">{project.description}</p>
-                <ul className="tag-list" aria-label="Project focus">
+                {project.focus.length > 0 && <ul className="tag-list" aria-label="Project focus">
                   {project.focus.map((focus) => (
                     <li key={focus}>{focus}</li>
                   ))}
-                </ul>
-                <details className="project-details">
-                  <summary className="text-link">
-                    Explore the approach <Plus size={17} aria-hidden="true" />
-                  </summary>
-                  <ul>
-                    {project.detail.approach.map((step) => (
-                      <li key={step}>{step}</li>
-                    ))}
-                  </ul>
-                </details>
+                </ul>}
+                <ProjectDetails project={project} />
               </div>
             </article>
           ))}

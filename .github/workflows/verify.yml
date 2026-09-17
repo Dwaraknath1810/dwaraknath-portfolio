@@ -1,0 +1,32 @@
+name: Verify portfolio
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - name: Browser QA against the production build
+        env:
+          CHROME_PATH: /usr/bin/google-chrome
+        run: npm run qa:browser
+      - run: npm run size
+      - name: Upload verification report and screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-verification
+          path: |
+            .qa/*.json
+            .qa/*.png
+          retention-days: 7

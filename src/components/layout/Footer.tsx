@@ -8,7 +8,8 @@ export function Footer() {
         <span>{identity.name}</span>
         <span className="text-muted">{identity.role}</span>
       </div>
-      <p>© {new Date().getFullYear()}</p>
+      <a href="#capabilities">Capabilities</a>
+      <p>© {import.meta.env.VITE_BUILD_YEAR}</p>
       <a href="#top">
         Back to top <ArrowUp size={14} aria-hidden="true" />
       </a>

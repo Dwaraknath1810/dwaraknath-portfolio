@@ -58,7 +58,7 @@
 }
 
 .site-header__name {
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.4;
   font-weight: 500;
   letter-spacing: 1.35px;
@@ -157,7 +157,7 @@
     display: none;
   }
 
-  .nav-toggle {
+  html[data-enhanced] .nav-toggle {
     display: inline-flex;
   }
 
@@ -208,7 +208,7 @@
 
   .nav-mobile__index {
     color: #a4a8ad;
-    font-size: 10px;
+    font-size: 11px;
     letter-spacing: 0;
   }
 
@@ -226,7 +226,7 @@
   .nav-mobile__signature {
     margin: 26px 0 0;
     color: #a4a8ad;
-    font-size: 9px;
+    font-size: 11px;
     letter-spacing: 1.7px;
     text-transform: uppercase;
   }
@@ -258,4 +258,12 @@
     animation: none;
     transition: none;
   }
+}
+
+.fallback-navigation { display: none; }
+@media (max-width: 1023px) {
+  html:not([data-enhanced]) .fallback-navigation { display: block; }
+  .fallback-navigation summary { padding: 12px; min-height: 44px; }
+  .fallback-navigation nav { position: absolute; top: 72px; left: 0; right: 0; padding: 20px var(--gutter); background: var(--background); border-bottom: 1px solid var(--border); }
+  .fallback-navigation a { display: block; padding: 12px 0; }
 }

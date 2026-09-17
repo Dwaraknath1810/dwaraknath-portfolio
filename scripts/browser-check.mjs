@@ -1,12 +1,14 @@
 import { spawn } from 'node:child_process'
-import { mkdir, writeFile } from 'node:fs/promises'
+import { ChromeProtocol, debuggingUrl, evaluate } from './chrome.mjs'
+import { inspectEnhanced } from './browser-scenarios.mjs'
+import { mkdir, writeFile, rm } from 'node:fs/promises'
 import path from 'node:path'
 import { setTimeout as sleep } from 'node:timers/promises'
 
 // Local Chrome only. Uses the WebSocket implementation included in modern Node.
 // Run after starting Vite: node scripts/browser-check.mjs
-const baseUrl = process.env.PORTFOLIO_URL || 'http://127.0.0.1:5173'
-const chromeBinary = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const baseUrl = process.env.PORTFOLIO_URL || 'http://127.0.0.1:4173'
+const chromeBinary = process.env.CHROME_PATH || (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : '/usr/bin/google-chrome')
 const outputDirectory = path.resolve('.qa')
 const viewports = [
   { width: 1920, height: 1080 },
@@ -17,119 +19,17 @@ const viewports = [
   { width: 430, height: 932 },
   { width: 390, height: 844 },
   { width: 320, height: 740 },
+  { width: 320, height: 568 },
+  { width: 390, height: 667 },
+  { width: 1440, height: 600 },
+  { width: 1920, height: 1200 },
+  { width: 320, height: 1000 },
+  { width: 599, height: 900 },
+  { width: 600, height: 900 },
+  { width: 640, height: 900 },
+  { width: 641, height: 900 },
+  { width: 1023, height: 900 },
 ]
-
-class ChromeProtocol {
-  constructor(socket, onEvent) {
-    this.socket = socket
-    this.nextId = 1
-    this.pending = new Map()
-    this.onEvent = onEvent
-    socket.addEventListener('message', (event) => {
-      const message = JSON.parse(String(event.data))
-      if (message.id) {
-        const request = this.pending.get(message.id)
-        if (!request) return
-        clearTimeout(request.timeout)
-        this.pending.delete(message.id)
-        if (message.error) request.reject(new Error(`${request.method}: ${message.error.message}`))
-        else request.resolve(message.result)
-      } else {
-        this.onEvent(message)
-      }
-    })
-    socket.addEventListener('close', () => this.rejectPending('Chrome WebSocket closed'))
-    socket.addEventListener('error', () => this.rejectPending('Chrome WebSocket error'))
-  }
-
-  static async connect(url, onEvent) {
-    const socket = new WebSocket(url)
-    await new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        socket.close()
-        reject(new Error('Timed out connecting to Chrome'))
-      }, 15_000)
-      socket.addEventListener('open', () => { clearTimeout(timeout); resolve() }, { once: true })
-      socket.addEventListener('error', () => {
-        clearTimeout(timeout)
-        reject(new Error('Could not connect to Chrome'))
-      }, { once: true })
-    })
-    return new ChromeProtocol(socket, onEvent)
-  }
-
-  request(method, params = {}, sessionId, timeoutMs = 15_000) {
-    return new Promise((resolve, reject) => {
-      if (this.socket.readyState !== WebSocket.OPEN) {
-        reject(new Error(`Chrome is not connected: ${method}`))
-        return
-      }
-      const id = this.nextId++
-      const timeout = setTimeout(() => {
-        this.pending.delete(id)
-        reject(new Error(`Timed out after ${timeoutMs}ms: ${method}`))
-      }, timeoutMs)
-      this.pending.set(id, { resolve, reject, timeout, method })
-      try {
-        this.socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }))
-      } catch (error) {
-        clearTimeout(timeout)
-        this.pending.delete(id)
-        reject(error)
-      }
-    })
-  }
-
-  session(sessionId) {
-    return (method, params = {}, timeoutMs = 15_000) => this.request(method, params, sessionId, timeoutMs)
-  }
-
-  rejectPending(message) {
-    for (const { reject, timeout } of this.pending.values()) {
-      clearTimeout(timeout)
-      reject(new Error(message))
-    }
-    this.pending.clear()
-  }
-
-  close() {
-    this.rejectPending('Chrome session closed during cleanup')
-    this.socket.close()
-  }
-}
-
-function debuggingUrl(chrome) {
-  return new Promise((resolve, reject) => {
-    let stderr = ''
-    const timeout = setTimeout(() => finish(new Error('Timed out waiting for Chrome DevTools endpoint')), 20_000)
-    function finish(error, url) {
-      clearTimeout(timeout)
-      chrome.stderr.off('data', onData)
-      chrome.off('error', onError)
-      chrome.off('exit', onExit)
-      if (error) reject(new Error(`${error.message}\n${stderr.slice(-2000)}`))
-      else resolve(url)
-    }
-    function onData(chunk) {
-      stderr = (stderr + String(chunk)).slice(-12_000)
-      const match = stderr.match(/DevTools listening on (ws:\/\/[^\s]+)/)
-      if (match) finish(null, match[1])
-    }
-    function onError(error) { finish(error) }
-    function onExit(code, signal) { finish(new Error(`Chrome exited before startup: ${code ?? signal}`)) }
-    chrome.stderr.on('data', onData)
-    chrome.once('error', onError)
-    chrome.once('exit', onExit)
-  })
-}
-
-async function evaluate(send, expression) {
-  const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
-  if (result.exceptionDetails) {
-    throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text)
-  }
-  return result.result.value
-}
 
 async function waitForApp(send) {
   const deadline = Date.now() + 20_000
@@ -273,6 +173,14 @@ async function inspectInteractions(send, result) {
 }
 
 async function capture(send, viewport) {
+  if ([1440, 390].includes(viewport.width)) {
+    for (const id of ['work', 'experience', 'contact']) {
+      await evaluate(send, `document.querySelector('#${id}').scrollIntoView({behavior:'instant'})`)
+      await sleep(120)
+      const image = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
+      await writeFile(path.join(outputDirectory, `${viewport.width}x${viewport.height}-${id}.png`), Buffer.from(image.data, 'base64'))
+    }
+  }
   // Visit every section so scroll-triggered content is present in the full-page image.
   await evaluate(send, `(async () => {
     for (const section of document.querySelectorAll('main > section')) {
@@ -284,7 +192,7 @@ async function capture(send, viewport) {
     await new Promise(resolve => setTimeout(resolve, 150));
   })()`)
   const hero = await send('Page.captureScreenshot', { format: 'png', fromSurface: true, captureBeyondViewport: false }, 30_000)
-  await writeFile(path.join(outputDirectory, `${viewport.width}-hero.png`), Buffer.from(hero.data, 'base64'))
+  await writeFile(path.join(outputDirectory, `${viewport.width}x${viewport.height}-hero.png`), Buffer.from(hero.data, 'base64'))
   const metrics = await send('Page.getLayoutMetrics')
   const size = metrics.cssContentSize || metrics.contentSize
   const full = await send('Page.captureScreenshot', {
@@ -293,8 +201,8 @@ async function capture(send, viewport) {
     captureBeyondViewport: true,
     clip: { x: 0, y: 0, width: Math.ceil(size.width), height: Math.ceil(size.height), scale: 1 },
   }, 30_000)
-  await writeFile(path.join(outputDirectory, `${viewport.width}-full.png`), Buffer.from(full.data, 'base64'))
-  return { hero: `.qa/${viewport.width}-hero.png`, fullPage: `.qa/${viewport.width}-full.png` }
+  await writeFile(path.join(outputDirectory, `${viewport.width}x${viewport.height}-full.png`), Buffer.from(full.data, 'base64'))
+  return { hero: `.qa/${viewport.width}x${viewport.height}-hero.png`, fullPage: `.qa/${viewport.width}x${viewport.height}-full.png` }
 }
 
 const report = {
@@ -305,10 +213,13 @@ const report = {
   consoleErrors: [],
   runtimeExceptions: [],
   networkFailures: [],
+  httpErrors: [],
+  enhanced: { checks: [] },
   standardMotion: { checks: [] },
   passed: false,
 }
 let chrome
+let previewServer
 let protocol
 let currentViewport = null
 const requestUrls = new Map()
@@ -316,6 +227,19 @@ const requestUrls = new Map()
 try {
   if (typeof WebSocket === 'undefined') throw new Error('This script requires a Node version with built-in WebSocket support (Node 22 or newer).')
   await mkdir(outputDirectory, { recursive: true })
+  if (!process.env.PORTFOLIO_URL) {
+    previewServer = spawn(process.execPath, ['node_modules/vite/bin/vite.js', 'preview', '--host', '127.0.0.1', '--port', '4173', '--strictPort'], { stdio: ['ignore', 'pipe', 'pipe'] })
+    let serverLog = ''
+    previewServer.stderr.on('data', chunk => { serverLog += chunk })
+    previewServer.stdout.resume()
+    let ready = false
+    for (let attempt = 0; attempt < 100; attempt++) {
+      await sleep(100)
+      if (previewServer.exitCode !== null) throw new Error(`Preview failed: ${serverLog}`)
+      try { if ((await fetch(baseUrl)).ok) { ready = true; break } } catch { /* wait for the owned server */ }
+    }
+    if (!ready) throw new Error(`Preview did not start: ${serverLog}`)
+  }
   chrome = spawn(chromeBinary, [
     '--headless=new',
     '--remote-debugging-port=0',
@@ -341,6 +265,7 @@ try {
       report.runtimeExceptions.push({ ...context, message: params.exceptionDetails.exception?.description || params.exceptionDetails.text })
     }
     if (method === 'Network.requestWillBeSent') requestUrls.set(params.requestId, params.request.url)
+    if (method === 'Network.responseReceived' && params.response.status >= 400) report.httpErrors.push({ ...context, status: params.response.status, url: params.response.url })
     if (method === 'Network.loadingFailed') {
       report.networkFailures.push({ ...context, url: requestUrls.get(params.requestId), error: params.errorText, canceled: Boolean(params.canceled), type: params.type })
     }
@@ -351,6 +276,7 @@ try {
   const { sessionId } = await protocol.request('Target.attachToTarget', { targetId, flatten: true })
   const send = protocol.session(sessionId)
   await Promise.all(['Page.enable', 'Runtime.enable', 'Network.enable', 'Log.enable'].map(method => send(method)))
+  await send('Page.addScriptToEvaluateOnNewDocument', { source: `window.__layoutShifts = 0; new PerformanceObserver(list => { for (const entry of list.getEntries()) if (!entry.hadRecentInput) window.__layoutShifts += entry.value; }).observe({type: 'layout-shift', buffered:true});` })
   await send('Emulation.setEmulatedMedia', { media: 'screen', features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
 
   for (const viewport of viewports) {
@@ -363,6 +289,8 @@ try {
     await waitForApp(send)
     const layout = await evaluate(send, layoutInspection)
     result.layout = layout
+    const cls = await evaluate(send, 'window.__layoutShifts || 0')
+    addCheck(result, 'Initial cumulative layout shift stays below 0.1', cls < 0.1, cls)
     addCheck(result, 'Viewport dimensions match requested size', layout.viewport.width === viewport.width && layout.viewport.height === viewport.height, layout.viewport)
     addCheck(result, 'Document has no horizontal overflow', layout.scrollWidth <= viewport.width + 1, layout.scrollWidth)
     addCheck(result, 'Visible elements stay within viewport horizontally', layout.overflows.length === 0, layout.overflows)
@@ -392,15 +320,12 @@ try {
   const entrance = await evaluate(send, `({
     reduced: matchMedia('(prefers-reduced-motion: reduce)').matches,
     titleOpacity: getComputedStyle(document.querySelector('#hero-title')).opacity,
-    titleLinesSettled: [...document.querySelectorAll('.hero-title-word')].every(line => {
-      const transform = getComputedStyle(line).transform;
-      return transform === 'none' || new DOMMatrix(transform).m42 === 0;
-    }),
+    titleInitiallyMasked: [...document.querySelectorAll('.hero-title-word')].every(line => getComputedStyle(line).opacity === '0'),
     portraitOpacity: getComputedStyle(document.querySelector('.hero-portrait')).opacity,
     scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior
   })`)
-  addCheck(report.standardMotion, 'Normal-motion hero finishes visibly and enables smooth scrolling',
-    !entrance.reduced && entrance.titleOpacity === '1' && entrance.titleLinesSettled
+  addCheck(report.standardMotion, 'Normal-motion hero begins with a visible portrait and masked title',
+    !entrance.reduced && entrance.titleOpacity === '1' && entrance.titleInitiallyMasked
     && entrance.portraitOpacity === '1' && entrance.scrollBehavior === 'smooth', entrance)
 
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
@@ -428,8 +353,12 @@ try {
   report.standardMotion.passed = report.standardMotion.checks.every(check => check.passed)
   console.log(`Standard motion and keyboard: ${report.standardMotion.passed ? 'PASS' : 'FAIL'}`)
 
+  await inspectEnhanced(send, report.enhanced, baseUrl)
+
   report.passed = report.viewports.every(viewport => viewport.passed)
     && report.standardMotion.passed
+    && report.enhanced.checks.every(check => check.passed)
+    && report.httpErrors.length === 0
     && report.consoleErrors.length === 0
     && report.runtimeExceptions.length === 0
     && report.networkFailures.every(failure => failure.canceled)
@@ -437,6 +366,7 @@ try {
   report.fatalError = error instanceof Error ? error.stack : String(error)
   console.error(report.fatalError)
 } finally {
+  previewServer?.kill('SIGTERM')
   protocol?.close()
   if (chrome && chrome.exitCode === null && chrome.signalCode === null) {
     chrome.kill('SIGTERM')
@@ -446,6 +376,7 @@ try {
     ])
     if (!exited) chrome.kill('SIGKILL')
   }
+  await rm(path.join(outputDirectory, 'chrome-profile'), { recursive: true, force: true })
   report.finishedAt = new Date().toISOString()
   await mkdir(outputDirectory, { recursive: true })
   await writeFile(path.join(outputDirectory, 'browser-results.json'), `${JSON.stringify(report, null, 2)}\n`)
