@@ -1,61 +1,94 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
 import { ArrowDown, ArrowUpRight } from 'lucide-react'
+import { m, useReducedMotion } from 'framer-motion'
+import portrait from '../assets/dwaraknath-portrait.jpg'
+import portraitSmall from '../assets/dwaraknath-portrait-small.jpg'
 import { identity } from '../data/portfolio'
-import { WebGLFallback } from '../components/three/WebGLFallback'
-import { useHeroProgress } from '../hooks/useHeroProgress'
 
-const HeroCanvas = lazy(() => import('../components/three/HeroCanvas'))
 export function Hero() {
-  const { section, controller } = useHeroProgress()
-  const [enhanced, setEnhanced] = useState(false)
-  useEffect(() => {
-    const query = matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)')
-    let timer = 0, disposed = false
-    const enhance = () => {
-      const image = document.querySelector<HTMLImageElement>('.hero-portrait img')
-      void (image?.decode() ?? Promise.resolve()).catch(() => {}).then(() => {
-        if (!disposed && query.matches) setEnhanced(true)
-      })
-    }
-    const update = () => {
-      clearTimeout(timer)
-      if (!query.matches) { setEnhanced(false); return }
-      // Let the HTML, font and portrait paint before requesting the optional 3D bundle.
-      timer = window.setTimeout(enhance, 1200)
-    }
-    update(); query.addEventListener('change', update)
-    return () => { disposed = true; clearTimeout(timer); query.removeEventListener('change', update) }
-  }, [])
+  const reduced = useReducedMotion()
+
   return (
-    <section ref={section} id="top" className="hero" aria-labelledby="hero-title">
-      <div className="hero-stage shell">
-        <div className="hero-topline eyebrow"><span><i className="status-dot" /> Human perspective. Machine intelligence.</span><span className="hero-edition">Portfolio / {new Date().getFullYear()}</span></div>
-        <div className="hero-composition">
-          <div className="hero-atmosphere" aria-hidden="true"><i /><i /><i /></div>
-          <figure className="hero-portrait">
-            <picture>
-              <source type="image/webp" srcSet="/images/portrait-480.webp 480w, /images/portrait-800.webp 800w, /images/portrait-1122.webp 1122w" sizes="(max-width: 640px) 82vw, (max-width: 1023px) 48vw, 480px" />
-              <img src="/images/portrait-1122.jpg" srcSet="/images/portrait-480.jpg 480w, /images/portrait-800.jpg 800w, /images/portrait-1122.jpg 1122w" sizes="(max-width: 640px) 82vw, (max-width: 1023px) 48vw, 480px" width="1122" height="1402" fetchPriority="high" alt="Dwaraknath Balaji wearing a dark suit, photographed against a neutral background." />
-            </picture>
-            <figcaption className="eyebrow"><span>{identity.name}</span><span>Based in {identity.location}</span></figcaption>
-          </figure>
-          {enhanced && <WebGLFallback><Suspense fallback={null}><HeroCanvas controller={controller} /></Suspense></WebGLFallback>}
-          <div className="hero-copy">
-            <p className="hero-name eyebrow">{identity.name}<span> / AI engineering</span></p>
-            <h1 id="hero-title" aria-label={`${identity.name} — ${identity.role}`}>
-              <span className="hero-title-line"><span className="hero-title-word">AI</span></span>
-              <span className="hero-title-line"><span className="hero-title-word">ENGINEER<span className="hero-period">.</span></span></span>
-            </h1>
-            <div className="hero-intro"><p>{identity.positioning}</p></div>
-            <div className="hero-links">
-              <a className="text-link" href="#work">Selected work <ArrowDown size={16} aria-hidden="true" /></a>
-              <a className="text-link text-link-muted" href="#contact">Let’s talk <ArrowUpRight size={16} aria-hidden="true" /></a>
+    <section id="top" className="hero shell" aria-labelledby="hero-title">
+      <div className="hero-topline eyebrow">
+        <span>
+          <i className="status-dot" />
+          Independent thinking. Intelligent systems.
+        </span>
+        <span className="hero-edition">
+          Portfolio — {new Date().getFullYear()}
+        </span>
+      </div>
+      <div className="hero-composition">
+        <m.figure
+          className="hero-portrait"
+          initial={
+            reduced ? false : { opacity: 0.5, clipPath: 'inset(0 0 18% 0)' }
+          }
+          animate={{ opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
+          transition={{ duration: reduced ? 0 : 1.15, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img
+            src={portrait}
+            srcSet={`${portraitSmall} 576w, ${portrait} 1122w`}
+            sizes="(max-width: 640px) 82vw, (max-width: 1024px) 49vw, 42vw"
+            width="1122"
+            height="1402"
+            fetchPriority="high"
+            alt="Dwaraknath Balaji wearing a dark suit, photographed against a neutral background."
+          />
+          <figcaption className="eyebrow">
+            <span>{identity.name}</span>
+            <span>Based in {identity.location}</span>
+          </figcaption>
+        </m.figure>
+        <div className="hero-copy">
+          <p className="hero-name eyebrow">{identity.name}</p>
+          <h1 id="hero-title">
+            <span className="hero-title-line">
+              <m.span
+                className="hero-title-word"
+                initial={reduced ? false : { y: '105%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: reduced ? 0 : 0.95, ease: [0.22, 1, 0.36, 1] }}
+              >AI</m.span>
+            </span>
+            <span className="hero-title-line">
+              <m.span
+                className="hero-title-word"
+                initial={reduced ? false : { y: '105%' }}
+                animate={{ y: '0%' }}
+                transition={{ duration: reduced ? 0 : 1.05, delay: reduced ? 0 : 0.12, ease: [0.22, 1, 0.36, 1] }}
+              >ENGINEER<span className="hero-period">.</span></m.span>
+            </span>
+          </h1>
+          <div className="hero-intro">
+            <p>{identity.positioning}</p>
+            <div className="hero-links flex flex-wrap items-center gap-x-8 gap-y-4">
+              <a className="text-link" href="#work">
+                Selected work <ArrowDown size={16} aria-hidden="true" />
+              </a>
+              <a className="text-link text-link-muted" href="#contact">
+                Let’s talk <ArrowUpRight size={16} aria-hidden="true" />
+              </a>
             </div>
           </div>
-          <p className="portrait-index eyebrow" aria-hidden="true">Context → Reasoning → Action</p>
         </div>
-        <div className="hero-bottom eyebrow"><p>{identity.supportingLine}</p><a href="#about">Scroll to explore <ArrowDown size={16} aria-hidden="true" /></a></div>
-        <div className="hero-progress" aria-hidden="true" />
+        <div className="portrait-index eyebrow" aria-hidden="true">
+          Human perspective. Machine intelligence.
+        </div>
+      </div>
+      <div className="hero-bottom eyebrow">
+        <m.span
+          className="hero-rule"
+          aria-hidden="true"
+          initial={reduced ? false : { scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: reduced ? 0 : 1, delay: reduced ? 0 : 0.35, ease: [0.22, 1, 0.36, 1] }}
+        />
+        <p>{identity.supportingLine}</p>
+        <a href="#about">
+          Scroll to explore <ArrowDown size={14} aria-hidden="true" />
+        </a>
       </div>
     </section>
   )

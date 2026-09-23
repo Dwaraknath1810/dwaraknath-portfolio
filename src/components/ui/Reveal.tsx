@@ -1,22 +1,31 @@
-import { useEffect, useRef, type ReactNode } from 'react'
+import { m, useReducedMotion } from 'framer-motion'
+import type { ReactNode } from 'react'
 
-export function Reveal({ children, className = '', delay = 0, variant = 'text' }: {
-  children: ReactNode; className?: string; delay?: number; variant?: 'text' | 'image' | 'mask'
+export function Reveal({
+  children,
+  className = '',
+  delay = 0,
+  variant = 'text',
+}: {
+  children: ReactNode
+  className?: string
+  delay?: number
+  variant?: 'text' | 'image' | 'mask'
 }) {
-  const ref = useRef<HTMLDivElement>(null)
-  useEffect(() => {
-    const element = ref.current
-    if (!element || matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    // Content remains visible by default, including when JS or IO is unavailable.
-    if (!('IntersectionObserver' in window)) return
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) {
-        element.classList.add('reveal-enter')
-        observer.disconnect()
-      }
-    }, { threshold: 0.12 })
-    observer.observe(element)
-    return () => observer.disconnect()
-  }, [])
-  return <div ref={ref} className={className} data-reveal={variant} style={{ animationDelay: `${delay}s` }}>{children}</div>
+  const reduced = useReducedMotion()
+  const entrance = variant === 'text'
+    ? { opacity: 0, y: 18 }
+    : { opacity: variant === 'image' ? 0.5 : 0.7, y: 0, clipPath: 'inset(0 0 16% 0)' }
+
+  return (
+    <m.div
+      className={className}
+      initial={reduced ? false : entrance}
+      whileInView={{ opacity: 1, y: 0, clipPath: 'inset(0 0 0% 0)' }}
+      viewport={{ once: true, amount: 0.18, margin: '0px 0px -24px 0px' }}
+      transition={{ duration: reduced ? 0 : variant === 'text' ? 0.8 : 1.1, delay: reduced ? 0 : delay, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {children}
+    </m.div>
+  )
 }

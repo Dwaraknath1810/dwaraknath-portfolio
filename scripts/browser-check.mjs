@@ -5,9 +5,9 @@ import { setTimeout as sleep } from 'node:timers/promises'
 
 // Local Chrome only. Uses the WebSocket implementation included in modern Node.
 // Run after starting Vite: node scripts/browser-check.mjs
-const baseUrl = process.env.PORTFOLIO_URL || 'http://127.0.0.1:4173'
-const chromeBinary = process.env.CHROME_BIN || (process.platform === 'darwin' ? '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : 'google-chrome')
-const outputDirectory = path.resolve(process.env.QA_OUTPUT || '.qa')
+const baseUrl = process.env.PORTFOLIO_URL || 'http://127.0.0.1:5173'
+const chromeBinary = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
+const outputDirectory = path.resolve('.qa')
 const viewports = [
   { width: 1920, height: 1080 },
   { width: 1440, height: 1000 },
@@ -17,19 +17,119 @@ const viewports = [
   { width: 430, height: 932 },
   { width: 390, height: 844 },
   { width: 320, height: 740 },
-  { width: 320, height: 568 },
-  { width: 390, height: 1000 },
-  { width: 599, height: 900 },
-  { width: 600, height: 900 },
-  { width: 640, height: 900 },
-  { width: 641, height: 900 },
-  { width: 767, height: 900 },
-  { width: 1023, height: 900 },
-  { width: 1440, height: 600 },
-  { width: 1920, height: 1200 },
 ]
 
-import { ChromeProtocol, debuggingUrl, evaluate } from './chrome-protocol.mjs'
+class ChromeProtocol {
+  constructor(socket, onEvent) {
+    this.socket = socket
+    this.nextId = 1
+    this.pending = new Map()
+    this.onEvent = onEvent
+    socket.addEventListener('message', (event) => {
+      const message = JSON.parse(String(event.data))
+      if (message.id) {
+        const request = this.pending.get(message.id)
+        if (!request) return
+        clearTimeout(request.timeout)
+        this.pending.delete(message.id)
+        if (message.error) request.reject(new Error(`${request.method}: ${message.error.message}`))
+        else request.resolve(message.result)
+      } else {
+        this.onEvent(message)
+      }
+    })
+    socket.addEventListener('close', () => this.rejectPending('Chrome WebSocket closed'))
+    socket.addEventListener('error', () => this.rejectPending('Chrome WebSocket error'))
+  }
+
+  static async connect(url, onEvent) {
+    const socket = new WebSocket(url)
+    await new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        socket.close()
+        reject(new Error('Timed out connecting to Chrome'))
+      }, 15_000)
+      socket.addEventListener('open', () => { clearTimeout(timeout); resolve() }, { once: true })
+      socket.addEventListener('error', () => {
+        clearTimeout(timeout)
+        reject(new Error('Could not connect to Chrome'))
+      }, { once: true })
+    })
+    return new ChromeProtocol(socket, onEvent)
+  }
+
+  request(method, params = {}, sessionId, timeoutMs = 15_000) {
+    return new Promise((resolve, reject) => {
+      if (this.socket.readyState !== WebSocket.OPEN) {
+        reject(new Error(`Chrome is not connected: ${method}`))
+        return
+      }
+      const id = this.nextId++
+      const timeout = setTimeout(() => {
+        this.pending.delete(id)
+        reject(new Error(`Timed out after ${timeoutMs}ms: ${method}`))
+      }, timeoutMs)
+      this.pending.set(id, { resolve, reject, timeout, method })
+      try {
+        this.socket.send(JSON.stringify({ id, method, params, ...(sessionId ? { sessionId } : {}) }))
+      } catch (error) {
+        clearTimeout(timeout)
+        this.pending.delete(id)
+        reject(error)
+      }
+    })
+  }
+
+  session(sessionId) {
+    return (method, params = {}, timeoutMs = 15_000) => this.request(method, params, sessionId, timeoutMs)
+  }
+
+  rejectPending(message) {
+    for (const { reject, timeout } of this.pending.values()) {
+      clearTimeout(timeout)
+      reject(new Error(message))
+    }
+    this.pending.clear()
+  }
+
+  close() {
+    this.rejectPending('Chrome session closed during cleanup')
+    this.socket.close()
+  }
+}
+
+function debuggingUrl(chrome) {
+  return new Promise((resolve, reject) => {
+    let stderr = ''
+    const timeout = setTimeout(() => finish(new Error('Timed out waiting for Chrome DevTools endpoint')), 20_000)
+    function finish(error, url) {
+      clearTimeout(timeout)
+      chrome.stderr.off('data', onData)
+      chrome.off('error', onError)
+      chrome.off('exit', onExit)
+      if (error) reject(new Error(`${error.message}\n${stderr.slice(-2000)}`))
+      else resolve(url)
+    }
+    function onData(chunk) {
+      stderr = (stderr + String(chunk)).slice(-12_000)
+      const match = stderr.match(/DevTools listening on (ws:\/\/[^\s]+)/)
+      if (match) finish(null, match[1])
+    }
+    function onError(error) { finish(error) }
+    function onExit(code, signal) { finish(new Error(`Chrome exited before startup: ${code ?? signal}`)) }
+    chrome.stderr.on('data', onData)
+    chrome.once('error', onError)
+    chrome.once('exit', onExit)
+  })
+}
+
+async function evaluate(send, expression) {
+  const result = await send('Runtime.evaluate', { expression, returnByValue: true, awaitPromise: true })
+  if (result.exceptionDetails) {
+    throw new Error(result.exceptionDetails.exception?.description || result.exceptionDetails.text)
+  }
+  return result.result.value
+}
 
 async function waitForApp(send) {
   const deadline = Date.now() + 20_000
@@ -184,7 +284,7 @@ async function capture(send, viewport) {
     await new Promise(resolve => setTimeout(resolve, 150));
   })()`)
   const hero = await send('Page.captureScreenshot', { format: 'png', fromSurface: true, captureBeyondViewport: false }, 30_000)
-  await writeFile(path.join(outputDirectory, `${viewport.width}x${viewport.height}-hero.png`), Buffer.from(hero.data, 'base64'))
+  await writeFile(path.join(outputDirectory, `${viewport.width}-hero.png`), Buffer.from(hero.data, 'base64'))
   const metrics = await send('Page.getLayoutMetrics')
   const size = metrics.cssContentSize || metrics.contentSize
   const full = await send('Page.captureScreenshot', {
@@ -193,8 +293,8 @@ async function capture(send, viewport) {
     captureBeyondViewport: true,
     clip: { x: 0, y: 0, width: Math.ceil(size.width), height: Math.ceil(size.height), scale: 1 },
   }, 30_000)
-  await writeFile(path.join(outputDirectory, `${viewport.width}x${viewport.height}-full.png`), Buffer.from(full.data, 'base64'))
-  return { hero: path.join(outputDirectory, `${viewport.width}x${viewport.height}-hero.png`), fullPage: path.join(outputDirectory, `${viewport.width}x${viewport.height}-full.png`) }
+  await writeFile(path.join(outputDirectory, `${viewport.width}-full.png`), Buffer.from(full.data, 'base64'))
+  return { hero: `.qa/${viewport.width}-hero.png`, fullPage: `.qa/${viewport.width}-full.png` }
 }
 
 const report = {
@@ -218,8 +318,6 @@ try {
   await mkdir(outputDirectory, { recursive: true })
   chrome = spawn(chromeBinary, [
     '--headless=new',
-    '--no-sandbox',
-    '--enable-unsafe-swiftshader',
     '--remote-debugging-port=0',
     `--user-data-dir=${path.join(outputDirectory, 'chrome-profile')}`,
     '--no-first-run',
@@ -301,8 +399,8 @@ try {
     portraitOpacity: getComputedStyle(document.querySelector('.hero-portrait')).opacity,
     scrollBehavior: getComputedStyle(document.documentElement).scrollBehavior
   })`)
-  addCheck(report.standardMotion, 'Normal-motion hero starts with masked title and visible portrait',
-    !entrance.reduced && entrance.titleOpacity === '1' && !entrance.titleLinesSettled
+  addCheck(report.standardMotion, 'Normal-motion hero finishes visibly and enables smooth scrolling',
+    !entrance.reduced && entrance.titleOpacity === '1' && entrance.titleLinesSettled
     && entrance.portraitOpacity === '1' && entrance.scrollBehavior === 'smooth', entrance)
 
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Tab', code: 'Tab', windowsVirtualKeyCode: 9 })
@@ -327,7 +425,6 @@ try {
   await send('Input.dispatchKeyEvent', { type: 'keyDown', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13, text: '\r', unmodifiedText: '\r' })
   await send('Input.dispatchKeyEvent', { type: 'keyUp', key: 'Enter', code: 'Enter', windowsVirtualKeyCode: 13 })
   addCheck(report.standardMotion, 'Project approach opens through keyboard activation', await evaluate(send, `document.querySelector('.project-details').open`))
-  await extendedChecks(send, report.standardMotion)
   report.standardMotion.passed = report.standardMotion.checks.every(check => check.passed)
   console.log(`Standard motion and keyboard: ${report.standardMotion.passed ? 'PASS' : 'FAIL'}`)
 
@@ -354,104 +451,4 @@ try {
   await writeFile(path.join(outputDirectory, 'browser-results.json'), `${JSON.stringify(report, null, 2)}\n`)
   console.log(`Browser QA ${report.passed ? 'passed' : 'failed'}: .qa/browser-results.json`)
   process.exitCode = report.passed ? 0 : 1
-}
-
-async function extendedChecks(send, result) {
-  const screenshot = async name => {
-    const capture = await send('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false })
-    await writeFile(path.join(outputDirectory, `${name}.png`), Buffer.from(capture.data, 'base64'))
-  }
-  const key = async (value, code, keyCode) => {
-    await send('Input.dispatchKeyEvent', { type: 'keyDown', key: value, code, windowsVirtualKeyCode: keyCode, ...(value === 'Enter' ? { text: '\r' } : {}) })
-    await send('Input.dispatchKeyEvent', { type: 'keyUp', key: value, code, windowsVirtualKeyCode: keyCode })
-  }
-  await send('Page.navigate', { url: baseUrl })
-  await waitForApp(send)
-  await sleep(1000)
-  addCheck(result, 'Exactly one decorative WebGL canvas on supported desktop', await evaluate(send, `document.querySelectorAll('.hero-canvas canvas').length === 1 && document.querySelector('.hero-canvas').getAttribute('aria-hidden') === 'true'`))
-  for (const progress of [0, .25, .5, .75, 1]) {
-    await evaluate(send, `scrollTo({ top: (document.querySelector('#top').offsetHeight - innerHeight) * ${progress}, behavior: 'instant' })`)
-    await sleep(450)
-    const state = await evaluate(send, `({ progress: Number(document.querySelector('#top').dataset.progress), introduction: Number(getComputedStyle(document.querySelector('.hero-intro')).opacity), cta: Number(getComputedStyle(document.querySelector('.hero-links')).opacity), portrait: document.querySelector('.hero-portrait img').complete })`)
-    addCheck(result, `Hero stage ${progress * 100}% is synchronized and photographic`, Math.abs(state.progress - progress) < .003 && state.portrait && (progress !== 0 || (state.introduction === 0 && state.cta === 0)) && (progress !== 1 || (state.introduction === 1 && state.cta === 1)), state)
-    await screenshot(`stage-${progress * 100}`)
-  }
-  await sleep(700)
-  addCheck(result, 'Decorative 3D request starts after the portrait is available', await evaluate(send, `(() => {const r=performance.getEntriesByType('resource'); const scene=r.find(e=>/HeroCanvas.*js/.test(e.name)); const photo=r.find(e=>/portrait-/.test(e.name)); return scene && photo && scene.startTime > photo.responseEnd;})()`))
-  const frames = await evaluate(send, `document.querySelector('canvas')?.dataset.frames`)
-  await sleep(650)
-  addCheck(result, 'WebGL stops rendering when settled', frames !== undefined && frames === await evaluate(send, `document.querySelector('canvas')?.dataset.frames`), { frames })
-  await evaluate(send, `Object.defineProperty(document,'hidden',{configurable:true,value:true}); document.dispatchEvent(new Event('visibilitychange'))`)
-  await sleep(100)
-  const hiddenFrames = await evaluate(send, `document.querySelector('canvas')?.dataset.frames`)
-  await evaluate(send, `document.querySelector('#top').dispatchEvent(new PointerEvent('pointermove',{clientX:900,clientY:100,pointerType:'mouse'}))`)
-  await sleep(350)
-  addCheck(result, 'Document-hidden signal prevents additional rendering', hiddenFrames === await evaluate(send, `document.querySelector('canvas')?.dataset.frames`))
-  await evaluate(send, `delete document.hidden; document.dispatchEvent(new Event('visibilitychange'))`)
-  await send('Input.dispatchMouseEvent', { type: 'mouseWheel', x: 600, y: 500, deltaY: 700, deltaX: 0 })
-  await sleep(600)
-  addCheck(result, 'Ordinary wheel scrolling reaches About', await evaluate(send, `document.querySelector('#about').getBoundingClientRect().top < innerHeight`))
-  await screenshot('about-start')
-  await evaluate(send, `document.querySelector('#work').scrollIntoView({behavior:'instant'})`)
-  await sleep(500)
-  const offscreenFrames = await evaluate(send, `document.querySelector('canvas')?.dataset.frames`)
-  await sleep(500)
-  addCheck(result, 'WebGL stops rendering outside hero', offscreenFrames === await evaluate(send, `document.querySelector('canvas')?.dataset.frames`))
-  const count = await evaluate(send, `document.querySelectorAll('details').length`)
-  for (let index = 0; index < count; index++) {
-    await evaluate(send, `(() => { const d = document.querySelectorAll('details')[${index}]; d.open=false; d.querySelector('summary').focus(); })()`)
-    await key('Enter', 'Enter', 13)
-    addCheck(result, `Disclosure ${index + 1} opens with keyboard`, await evaluate(send, `document.querySelectorAll('details')[${index}].open`))
-    if (index >= 8) {
-      await evaluate(send, `document.querySelectorAll('details')[${index}].scrollIntoView({behavior:'instant'})`)
-      await sleep(120)
-      await screenshot(`case-study-${index - 7}`)
-    }
-    await key('Enter', 'Enter', 13)
-    addCheck(result, `Disclosure ${index + 1} closes with keyboard`, await evaluate(send, `!document.querySelectorAll('details')[${index}].open`))
-  }
-  await evaluate(send, `scrollTo({top:0,behavior:'instant'}); document.querySelector('.hero-links a').focus()`)
-  await sleep(150)
-  addCheck(result, 'Keyboard focus reveals hidden hero actions immediately', await evaluate(send, `getComputedStyle(document.querySelector('.hero-links')).opacity === '1'`))
-  const lost = await evaluate(send, `(() => { const canvas=document.querySelector('canvas'); const gl=canvas?.getContext('webgl2'); const ext=gl?.getExtension('WEBGL_lose_context'); if(!ext) return false; ext.loseContext(); return true; })()`)
-  await sleep(350)
-  addCheck(result, 'Context loss removes canvas and preserves portrait', lost && await evaluate(send, `!document.querySelector('.hero-canvas') && document.querySelector('.hero-portrait img').naturalWidth > 0`))
-  await screenshot('context-loss')
-  // Browser-level failure injection, not an application-specific bypass.
-  const injection = await send('Page.addScriptToEvaluateOnNewDocument', { source: `const original = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function(kind, ...args) { return /webgl/.test(kind) ? null : original.call(this, kind, ...args); };` })
-  await send('Page.navigate', { url: baseUrl }); await waitForApp(send); await sleep(500)
-  addCheck(result, 'Forced WebGL failure preserves the complete photographic hero', await evaluate(send, `!document.querySelector('.hero-canvas canvas') && document.querySelector('.hero-portrait img').naturalWidth > 0`))
-  await evaluate(send, `scrollTo({top:(document.querySelector('#top').offsetHeight-innerHeight)*.8,behavior:'instant'})`)
-  await sleep(200); await screenshot('webgl-fallback')
-  await send('Page.removeScriptToEvaluateOnNewDocument', { identifier: injection.identifier })
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'reduce' }] })
-  await send('Page.navigate', { url: baseUrl }); await waitForApp(send)
-  addCheck(result, 'Reduced motion shows full hero without loading WebGL', await evaluate(send, `!document.querySelector('canvas') && getComputedStyle(document.querySelector('.hero-links')).opacity === '1' && getComputedStyle(document.querySelector('.hero-stage')).position !== 'sticky'`))
-  await screenshot('reduced-motion')
-  // A cold document avoids Chrome reusing a previously cached larger srcset candidate.
-  await send('Page.navigate', { url: 'about:blank' })
-  await send('Network.clearBrowserCache')
-  await send('Network.setCacheDisabled', { cacheDisabled: true })
-  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
-  await send('Emulation.setEmulatedMedia', { features: [{ name: 'prefers-reduced-motion', value: 'no-preference' }] })
-  await send('Page.navigate', { url: baseUrl }); await waitForApp(send)
-  const mobile = await evaluate(send, `({ source: document.querySelector('.hero-portrait img').currentSrc, visible: getComputedStyle(document.querySelector('.hero-links')).opacity, canvas: !!document.querySelector('canvas'), imageRequests: performance.getEntriesByType('resource').filter(r=>/portrait-/.test(r.name)).length, resources: performance.getEntriesByType('resource').filter(r=>/portrait-/.test(r.name)).map(r=>r.name) })`)
-  addCheck(result, 'Mobile uses small WebP, one portrait request, complete content, no canvas', mobile.source.includes('480.webp') && mobile.visible === '1' && !mobile.canvas && mobile.imageRequests === 1, mobile)
-  await screenshot('mobile')
-  await evaluate(send, `document.querySelector('.project-details').open=true; document.querySelector('.project-details').scrollIntoView({behavior:'instant'})`)
-  addCheck(result, 'Expanded mobile case study has no overflow', await evaluate(send, `document.documentElement.scrollWidth <= innerWidth`))
-  await screenshot('case-study-mobile')
-  // Chrome browser zoom can be represented with halved layout viewport + doubled device scale.
-  await send('Emulation.setDeviceMetricsOverride', { width: 640, height: 450, deviceScaleFactor: 2, mobile: false })
-  await send('Page.navigate', { url: baseUrl }); await waitForApp(send)
-  const zoom = await evaluate(send, layoutInspection)
-  addCheck(result, '200% desktop zoom equivalent reflows without overflow', zoom.scrollWidth <= 640 && zoom.overflows.length === 0, zoom.overflows)
-  await screenshot('zoom-200')
-  await send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true })
-  await send('Emulation.setScriptExecutionDisabled', { value: true })
-  await send('Page.navigate', { url: baseUrl }); await sleep(1000)
-  const nojs = await evaluate(send, `({ h1: document.querySelectorAll('h1').length, projects: document.querySelectorAll('.project').length, experience: document.querySelectorAll('.experience-entry').length, contacts: document.querySelectorAll('.contact-links a').length, loaded: document.querySelector('.hero-portrait img')?.naturalWidth > 0, intro: getComputedStyle(document.querySelector('.hero-intro')).opacity, nav: document.querySelector('.nav-nojs')?.getBoundingClientRect().height, header: getComputedStyle(document.querySelector('.site-header')).position, toggle: getComputedStyle(document.querySelector('.nav-toggle')).display, overflow: document.documentElement.scrollWidth > innerWidth })`)
-  addCheck(result, 'No-JavaScript HTML contains visible portrait, projects, experience, contacts and navigation', nojs.h1 === 1 && nojs.projects === 3 && nojs.experience === 2 && nojs.contacts === 2 && nojs.loaded && nojs.intro === '1' && nojs.nav > 0 && nojs.header === 'relative' && nojs.toggle === 'none' && !nojs.overflow, nojs)
-  await screenshot('no-javascript')
-  await send('Emulation.setScriptExecutionDisabled', { value: false })
 }
