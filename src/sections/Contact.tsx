@@ -32,17 +32,14 @@ export function Contact() {
           with a conversation.
         </p>
         <ul className="contact-links">
-          {contactLinks.map(({ label, value }) => {
-            const isEmail = label === 'Email'
-            const href = isEmail ? `mailto:${value}` : value
-            const displayValue = isEmail ? value : value.replace(/^https:\/\//, '')
-
+          {contactLinks.map(({ id, label, href, displayValue, external, accessibleLabel }) => {
             return (
-              <li key={label}>
+              <li key={id}>
                 <a
                   href={href}
-                  target={isEmail ? undefined : '_blank'}
-                  rel={isEmail ? undefined : 'noopener noreferrer'}
+                  target={external ? '_blank' : undefined}
+                  rel={external ? 'noopener noreferrer' : undefined}
+                  aria-label={accessibleLabel}
                 >
                   <span>
                     {label}

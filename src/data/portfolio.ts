@@ -7,7 +7,7 @@ export interface Identity {
 }
 
 export interface NavigationItem {
-  readonly id: 'about' | 'expertise' | 'work' | 'experience' | 'philosophy' | 'contact'
+  readonly id: 'about' | 'expertise' | 'work' | 'experience' | 'capabilities' | 'philosophy' | 'contact'
   readonly label: string
 }
 
@@ -25,17 +25,41 @@ export interface Project {
   readonly description: string
   readonly focus: readonly string[]
   readonly kind: ProjectKind
-  readonly status: 'Project direction'
-  readonly detail: {
-    readonly approach: readonly string[]
-  }
+  readonly status: 'Project direction' | 'In progress' | 'Completed'
+  readonly projectType: string
+  readonly objective?: string
+  readonly context?: string
+  readonly role?: string
+  readonly responsibilities?: readonly string[]
+  readonly architecture?: readonly string[]
+  readonly technicalApproach: readonly string[]
+  readonly engineeringDecisions?: readonly string[]
+  readonly constraints?: readonly string[]
+  readonly challenges?: readonly string[]
+  readonly evaluationMethod?: string
+  readonly verifiedOutcomes?: readonly string[]
+  readonly stack?: readonly string[]
+  readonly media?: readonly { readonly src: string; readonly alt: string; readonly width: number; readonly height: number }[]
+  readonly repositoryUrl?: string
+  readonly demoUrl?: string
+  readonly caseStudyUrl?: string
 }
 
 export interface ExperienceEntry {
   readonly company: string
-  readonly roles: readonly string[]
-  readonly focus: readonly string[]
+  readonly primaryRole: string
+  readonly additionalRoles?: readonly string[]
+  readonly startDate?: string
+  readonly endDate?: string
+  readonly current?: boolean
   readonly previous: boolean
+  readonly location?: string
+  readonly summary?: string
+  readonly responsibilities?: readonly string[]
+  readonly engineeringContributions: readonly string[]
+  readonly verifiedOutcomes?: readonly string[]
+  readonly technologies?: readonly string[]
+  readonly companyUrl?: string
 }
 
 export interface CapabilityGroup {
@@ -49,8 +73,13 @@ export interface PhilosophyPrinciple {
 }
 
 export interface ContactLink {
-  readonly label: 'Email' | 'GitHub'
-  readonly value: string
+  readonly id: string
+  readonly kind: 'email' | 'github' | 'social'
+  readonly label: string
+  readonly href: string
+  readonly displayValue: string
+  readonly external: boolean
+  readonly accessibleLabel: string
 }
 
 export const identity: Identity = {
@@ -124,14 +153,18 @@ export const projects: readonly Project[] = [
       'A document-grounded AI system focused on retrieval quality, knowledge bases, evaluation, and reliable answer generation.',
     focus: ['RAG', 'Semantic Search', 'LLM Evaluation', 'Knowledge Bases'],
     kind: 'retrieval',
+    objective: 'Explore dependable answers over a document knowledge base.',
+    architecture: ['Proposed flow: source documents → chunks → embeddings → retrieval → grounded response → evaluation.'],
+    engineeringDecisions: ['Compare retrieval quality separately from generation quality so failures can be traced to the right stage.', 'Keep source references alongside retrieved context.'],
+    constraints: ['A conceptual direction; no deployment, dataset or measured results have been supplied.'],
+    evaluationMethod: 'Proposed: review retrieval relevance and source support for each answer using a curated question set.',
     status: 'Project direction',
-    detail: {
-      approach: [
-        'Explore how document knowledge can be organized for relevant retrieval.',
-        'Connect retrieved context to answer generation grounded in source material.',
-        'Evaluate retrieval relevance and answer quality as connected parts of the system.',
-      ],
-    },
+    projectType: 'Conceptual system study',
+    technicalApproach: [
+      'Explore how document knowledge can be organized for relevant retrieval.',
+      'Connect retrieved context to answer generation grounded in source material.',
+      'Evaluate retrieval relevance and answer quality as connected parts of the system.',
+    ],
   },
   {
     number: '02',
@@ -140,14 +173,18 @@ export const projects: readonly Project[] = [
       'An agent-oriented AI workflow designed around reasoning, tool usage, structured execution, and automation.',
     focus: ['Agentic AI', 'LLMs', 'Tool Use', 'Workflow Engineering'],
     kind: 'agents',
+    objective: 'Explore a structured path from a user objective to tool-assisted execution.',
+    architecture: ['Proposed flow: objective → plan → tool selection → execution → observation → revised plan.'],
+    engineeringDecisions: ['Define explicit tool inputs and outputs before connecting them to model decisions.', 'Consider bounded execution and reviewable traces for each workflow step.'],
+    constraints: ['A conceptual direction; no implemented tool integrations or business outcomes have been supplied.'],
+    evaluationMethod: 'Proposed: inspect task completion, tool selection and failure recovery against predefined workflow examples.',
     status: 'Project direction',
-    detail: {
-      approach: [
-        'Explore how reasoning can guide a structured sequence of workflow steps.',
-        'Connect language model decisions to tool usage and execution.',
-        'Consider how each step contributes to a useful, coherent automated workflow.',
-      ],
-    },
+    projectType: 'Conceptual system study',
+    technicalApproach: [
+      'Explore how reasoning can guide a structured sequence of workflow steps.',
+      'Connect language model decisions to tool usage and execution.',
+      'Consider how each step contributes to a useful, coherent automated workflow.',
+    ],
   },
   {
     number: '03',
@@ -156,22 +193,26 @@ export const projects: readonly Project[] = [
       'A system for testing groundedness, retrieval relevance, correctness, hallucination behavior, and response quality.',
     focus: ['Evaluation', 'RAG Testing', 'Groundedness', 'Reliability'],
     kind: 'evaluation',
+    objective: 'Explore a repeatable way to examine response quality and grounding.',
+    architecture: ['Proposed flow: questions + reference evidence → system responses → criterion-level review → failure analysis.'],
+    engineeringDecisions: ['Keep correctness, relevance and groundedness distinct rather than hiding them in one score.', 'Retain the source evidence needed to review individual claims.'],
+    constraints: ['A conceptual direction; no benchmark scores or measured improvements have been supplied.'],
+    evaluationMethod: 'Proposed: compare responses against reference evidence and review disagreements before interpreting aggregate results.',
     status: 'Project direction',
-    detail: {
-      approach: [
-        'Examine whether retrieved context is relevant to the question.',
-        'Assess correctness and whether responses are supported by their source material.',
-        'Study hallucination behavior and response quality to inform system reliability.',
-      ],
-    },
+    projectType: 'Conceptual system study',
+    technicalApproach: [
+      'Examine whether retrieved context is relevant to the question.',
+      'Assess correctness and whether responses are supported by their source material.',
+      'Study hallucination behavior and response quality to inform system reliability.',
+    ],
   },
 ]
 
 export const experience: readonly ExperienceEntry[] = [
   {
     company: 'PHOENIX ICT SOLUTIONS',
-    roles: ['AI / ML Engineer'],
-    focus: [
+    primaryRole: 'AI / ML Engineer',
+    engineeringContributions: [
       'AI engineering',
       'RAG',
       'LLM systems',
@@ -182,8 +223,9 @@ export const experience: readonly ExperienceEntry[] = [
   },
   {
     company: 'ZSCALER',
-    roles: ['QA Engineer Intern', 'Associate SDE — Platform Engineering'],
-    focus: [
+    primaryRole: 'Associate SDE — Platform Engineering',
+    additionalRoles: ['QA Engineer Intern'],
+    engineeringContributions: [
       'RAG dataset creation',
       'OAuth / RBAC repository visibility',
       'Tree-Sitter multi-language support',
@@ -236,6 +278,6 @@ export const philosophy: readonly PhilosophyPrinciple[] = [
 
 // Contact values are kept here so the displayed details and links stay in sync.
 export const contactLinks: readonly ContactLink[] = [
-  { label: 'Email', value: 'dwaraknath.balaji@gmail.com' },
-  { label: 'GitHub', value: 'https://github.com/Dwaraknath1810' },
+  { id: 'email', kind: 'email', label: 'Email', href: 'mailto:dwaraknath.balaji@gmail.com', displayValue: 'dwaraknath.balaji@gmail.com', external: false, accessibleLabel: 'Email Dwaraknath Balaji' },
+  { id: 'github', kind: 'github', label: 'GitHub', href: 'https://github.com/Dwaraknath1810', displayValue: 'github.com/Dwaraknath1810', external: true, accessibleLabel: 'Dwaraknath Balaji on GitHub (opens in a new tab)' },
 ]

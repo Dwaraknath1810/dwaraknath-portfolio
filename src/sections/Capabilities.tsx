@@ -5,6 +5,7 @@ import { Reveal } from '../components/ui/Reveal'
 export function Capabilities() {
   return (
     <section
+      id="capabilities"
       className="section shell capabilities"
       aria-labelledby="capabilities-title"
     >

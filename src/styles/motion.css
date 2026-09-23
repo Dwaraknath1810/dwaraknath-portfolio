@@ -1,0 +1,10 @@
+@keyframes reveal-enter { from { opacity: .65; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: no-preference) { .reveal-enter { animation: reveal-enter .65s ease both; } }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .hero { height: auto !important; }
+  .hero-stage { position: relative !important; height: auto !important; }
+  .hero-title-word, .hero-intro { transform: none !important; }
+  .hero-intro, .hero-links, .hero-bottom p { opacity: 1 !important; }
+}

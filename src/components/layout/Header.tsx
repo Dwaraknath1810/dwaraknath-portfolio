@@ -138,6 +138,7 @@ export function Header() {
         </button>
       </div>
 
+      <noscript><nav className="nav-nojs" aria-label="Navigation">{navigation.map(({ id, label }) => <a key={id} href={`#${id}`}>{label}</a>)}</nav></noscript>
       {menuOpen && (
         <nav id="mobile-navigation" className="nav-mobile" aria-label="Mobile navigation">
           {navigation.map(({ id, label }, index) => (

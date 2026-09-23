@@ -1,116 +1,97 @@
-# Dwaraknath Balaji — AI Engineer
+# Dwaraknath Balaji — AI engineering portfolio
 
-An editorial portfolio built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and Lucide React. All content and assets are local. No account, API key, backend, or production domain is required.
+A static editorial portfolio with a photographic, scroll-driven WebGL hero. Charcoal, off-white, metallic blue, Manrope, fine rules and conceptual technical artwork retain the original identity. The face is the owner's real photograph; it is never rendered as an avatar or generated texture.
 
-## Local development
+## Develop and verify
+
+Use Node 24 LTS and the committed lockfile.
 
 ```sh
-npm install
+npm ci
 npm run dev
+npm run check
+npm run preview -- --host 127.0.0.1 --port 4173
+npm run qa:browser
 ```
 
-Open the URL Vite prints. To validate and preview production output:
+`check` runs type checking, ESLint, production build/prerender, Node tests and bundle budgets. Individual commands: `npm run typecheck`, `npm run lint`, `npm run build`, `npm test`, `npm run size`. Run the build before tests, because tests verify its HTML.
 
-```sh
-npm run lint
-npm run build
-npm run preview
-```
+Browser QA uses installed Chrome and Node's built-in WebSocket/CDP support, without Playwright or browser downloads. Defaults to `http://127.0.0.1:4173`; override with `PORTFOLIO_URL`. Set `CHROME_BIN` on nonstandard systems. Reports/screenshots go to `.qa/` (or `QA_OUTPUT`). It checks all eight requested widths, ten additional short/tall/breakpoint combinations, native disclosures, focus, menu Escape, anchors, contact destinations, image loading, overflow, normal/reduced motion, scroll stages, idle rendering, context loss, WebGL failure, no-JavaScript HTML and 200% desktop zoom equivalent (halved CSS viewport with doubled device scale). This does not substitute for human screen-reader testing or a physical mobile-device lab.
 
-Use the committed `package-lock.json` with `npm ci` for reproducible installations. The project was built on macOS ARM64 using Node 25.8.0, npm 11.11.0, and Git 2.51.2. Vite 8 requires a compatible modern Node version; see its [official guide](https://vite.dev/guide/).
-
-## Personalize the content
-
-Edit `src/data/portfolio.ts` for identity, navigation, expertise, projects, experience, technical capabilities, philosophy, and contact details.
-
-The two contact methods are centralized in `contactLinks`:
-
-- Email: `dwaraknath.balaji@gmail.com`.
-- GitHub: `https://github.com/Dwaraknath1810`.
-
-The email address is displayed in full and opens a `mailto:` link. The GitHub profile is displayed without the URL scheme and opens in a new tab with `noopener noreferrer`. Updating either value in the data file updates its display and destination together.
-
-The three work entries are explicitly labeled **Project direction**, with conceptual illustrations and expandable approaches. Replace these with substantiated case studies when actual project material is available. No dates, metrics, client claims, or repository URLs were inferred.
-
-The copyright year is calculated automatically. Edit SEO and social preview text in `index.html`. Add a canonical URL and absolute social image URL only after choosing an actual production domain.
+GitHub Actions uses Node 24, `npm ci`, `npm run check`, an installed headless Chrome and a production preview server. Failure artifacts contain QA JSON and screenshots. No credentials are needed for CI validation.
 
 ## Architecture
 
-```text
-.
-├── .gitignore
-├── README.md
-├── dwaraknath-portrait.png          # untouched source supplied by the owner
-├── eslint.config.js
-├── index.html                      # title, SEO, social metadata, no-JS message
-├── package.json
-├── package-lock.json
-├── tsconfig.json
-├── tsconfig.app.json
-├── tsconfig.node.json
-├── vite.config.ts
-├── public/
-│   └── favicon.png
-├── scripts/
-│   └── browser-check.mjs           # optional macOS Chrome verification
-└── src/
-    ├── App.tsx
-    ├── main.tsx
-    ├── assets/
-    │   ├── dwaraknath-portrait.png  # byte-identical source copy
-    │   ├── dwaraknath-portrait.jpg
-    │   └── dwaraknath-portrait-small.jpg
-    ├── components/
-    │   ├── layout/
-    │   │   ├── Header.tsx
-    │   │   └── Footer.tsx
-    │   └── ui/
-    │       ├── ProjectArtwork.tsx
-    │       ├── Reveal.tsx
-    │       └── SectionLabel.tsx
-    ├── data/
-    │   └── portfolio.ts
-    ├── sections/
-    │   ├── Hero.tsx
-    │   ├── About.tsx
-    │   ├── Expertise.tsx
-    │   ├── Projects.tsx
-    │   ├── Experience.tsx
-    │   ├── Capabilities.tsx
-    │   ├── Philosophy.tsx
-    │   └── Contact.tsx
-    └── styles/
-        ├── global.css
-        ├── header.css
-        └── artwork.css
-```
+- `src/data/portfolio.ts`: strict, readonly identity, navigation, project, experience and contact types/content.
+- `src/sections/`: semantic HTML for Hero, About, Expertise, Projects, Experience, Capabilities, Philosophy and Contact.
+- `src/hooks/hero-progress.ts`: pure normalized stage mapping, covered by tests.
+- `src/hooks/useHeroProgress.ts`: cached hero measurements, passive scroll listener, refs and CSS variables. React state is not updated per scroll event.
+- `src/components/three/HeroCanvas.tsx`: lazy optional enhancement, WebGL support check, error boundary, context-loss fallback and visibility control.
+- `src/components/three/HeroScene.tsx`: on-demand rendering, constrained pointer interpolation, scroll-controlled depth and geometry.
+- `src/components/three/IntelligenceField.tsx`: thin metallic orbital geometry, connected nodes and restrained transparent planes. No textures, shadows, postprocessing, physics, Drei or particle system.
+- `src/components/ui/Reveal.tsx`: IntersectionObserver/CSS entrances. Content is visible before enhancement.
+- `src/styles/`: base tokens/reset, hero composition, sections/responsive rules, motion, header and retained CSS project artwork.
+- `src/entry-server.tsx` + `scripts/prerender.mjs`: build-time React rendering into `dist/index.html`; `src/main.tsx` hydrates it. No server runtime is deployed.
 
-Generated `node_modules/`, `dist/`, `.npm-cache/`, and `.qa/` are ignored by Git. The Vite template's demonstration components, illustrations, and styles were removed.
+## Hero sequence
 
-## Design and behavior
+A normal document section becomes 250svh with a sticky 100svh stage only on desktops at least 1024px wide and 700px tall with no motion reduction. There is no wheel/touch interception, scroll snapping or artificial scrollbar.
 
-- Charcoal `#101112`, off-white `#eeefec`, secondary gray `#969b9f`, fine borders `#303336`, metallic blue `#abc2d4`.
-- One self-hosted Manrope variable font, limited to the Latin WOFF2 file. No remote font requests.
-- CSS tokens cover surfaces, colors, spacing, content width, gutters, and responsive type. Tailwind's Vite integration supplies utility styles.
-- Hero uses responsive JPEG sources, explicit dimensions, a high-priority fetch, CSS monochrome treatment, and responsive object positioning. Masked headline lines overlap a wider portrait frame; mobile uses its own title placement and crop. Neither original PNG is rewritten.
-- Expertise is a numbered native disclosure index. Projects use large chapter numbers, varied desktop proportions, and native expandable approaches. Their CSS illustrations depict semantic retrieval, structured tool execution, and source-to-response evidence.
-- Experience omits unprovided dates. Capabilities use four typographic groups. A silver-blue philosophy section presents the four-step engineering loop.
-- Below 1024px navigation becomes a keyboard-accessible disclosure. Below 641px the hero is recomposed, projects stack, and content spacing changes. Tablet capabilities use two columns.
-- Navigation follows the current section with `aria-current` and a discreet underline. The header gains definition after scrolling; the mobile menu closes on Escape, selection, or keyboard focus leaving the header.
-- Framer Motion handles one-time headline masks, image reveals, section entrances, and a hero rule reveal through `LazyMotion`. Hover movement stays subtle; no continuous animation, springs, GSAP, or animation timers.
+| Progress | Behavior |
+| --- | --- |
+| 0–10% | Real portrait and name, quiet spatial environment |
+| 10–35% | AI, then ENGINEER, rise through 115% overflow masks |
+| 35–55% | Geometry gathers and positioning statement appears |
+| 50–75% | Calls to action and technology line appear |
+| 75–100% | Composition settles; ordinary scrolling continues into About |
 
-## Accessibility and verification
+Overall, portrait, title, AI, engineer, introduction, CTA, geometry and exit values are separately normalized. CSS and Three consume the same controller. Pointer movement is constrained to small rotations and interpolation requests end once settled. The canvas uses `frameloop="demand"`, a capped DPR, no perpetual animation, and pauses offscreen/when hidden. Declarative Fiber resources are disposed on unmount. A context loss removes the canvas permanently for that page visit.
 
-Semantic landmarks, one H1, ordered section headings, skip link, visible keyboard focus, meaningful portrait alt text, decorative artwork hidden from assistive technology, native disclosures, mobile navigation state announcements, and Escape dismissal with focus return are included. Reduced motion disables CSS animation and smooth scrolling, and prevents entrance transforms in Framer Motion.
+The portrait is a responsive HTML `picture`, not a WebGL texture. Canvas is decorative, transparent, excluded from accessibility, and occupies preallocated space. The photograph remains when WebGL is unavailable. Main content loads before the delayed 3D import. Essential text, contact links and navigation never live in the canvas.
 
-The optional browser check uses the existing macOS Google Chrome installation and Node's built-in WebSocket support; it does not download browser software or add dependencies. Start `npm run dev` in another terminal, then:
+Phones use a complete static composition with no 3D download or pointer effects. Tablets use the shorter complete composition. Short desktop windows also avoid the sticky sequence. Reduced motion skips the 3D enhancement, smooth scrolling, sticky sequence and nonessential animation; all hero content appears immediately. With JavaScript disabled, complete prerendered content and native disclosures remain usable, including a dedicated navigation fallback.
+
+Keyboard focus within the hero reveals its staged content immediately. The page has one H1, a working skip link, landmarks, visible focus, meaningful portrait alt text, explicit new-tab labels, native disclosures and mobile Escape/focus restoration. Capabilities is linked from the footer to keep primary navigation at six items.
+
+## Edit content without inventing evidence
+
+All owner content belongs in `src/data/portfolio.ts`. Project records support title/status/type, objective, context, role, responsibilities, architecture, technical approach, decisions, constraints, challenges, evaluation method, verified outcomes, stack, media and optional repository/demo/case-study URLs. All three remain **Project direction**. Proposed designs are labeled as proposals; there are no claimed implemented outcomes.
+
+Experience supports company, primary/additional roles, dates, current status, location, summary, responsibilities, contributions, verified outcomes, technologies and company URL. Missing dates/current status are not inferred. Optional details render only when populated. Contacts explicitly store ID, kind, label, href, display value, external behavior and accessible label; labels do not control behavior.
+
+See [CONTENT_NEEDED.md](CONTENT_NEEDED.md) for owner-supplied facts still needed. The existing employment descriptions are preserved source content, not independently verified claims.
+
+## Reproduce assets
 
 ```sh
-node scripts/browser-check.mjs
+npm run assets
+node scripts/social-preview.mjs
 ```
 
-Set `PORTFOLIO_URL` to the URL printed by a different local server when needed. Browser output and screenshots are saved in `.qa/`. The check covers 320, 390, 430, 768, 1024, 1280, 1440, and 1920px widths, overflow, images, active navigation, contact destinations, disclosures, reduced motion, and runtime errors. Normal-motion entrances and keyboard activation are also checked from a fresh page load. This is targeted verification, not a comprehensive assistive-technology audit.
+Sharp reads the untouched root `dwaraknath-portrait.png`, resizes to 480/800/1122px, emits WebP quality 80 (effort 6) and mozjpeg quality 82. It does not retouch facial features. Browser CSS supplies grayscale/tonal treatment. The generator only removes the source duplicate after byte-hash equality; it never deletes the original. Legacy nonidentical JPEGs in `src/assets` remain recoverable and are not bundled.
 
-## Scope
+The social script uses local Chrome to render a 1200×630 composition with the actual portrait and embedded Manrope, then Sharp encodes JPEG quality 88. It does not request external assets. Review `public/social-preview.jpg`. Portrait derivatives, social preview and icons are committed, so CI/hosting builds do not need Chrome for asset generation.
 
-This is a local static portfolio. Contact methods use the owner's supplied email and GitHub profile. Project artwork is conceptual, and the page includes no contact form or fabricated case-study destinations. Social metadata has no invented production URL or image. No GitHub repository, remote, credentials, or hosting is configured.
+## SEO and static deployment
+
+The build adds full portfolio HTML, Person JSON-LD, Open Graph/Twitter metadata, icons and `robots.txt`. `VITE_SITE_URL` is the only production-origin setting: a plain HTTPS origin, without a path, credentials, query or fragment. Without it, canonical, absolute social image URL, profile URL and sitemap are omitted rather than fabricated. When set, canonical/OG URL/social image and `sitemap.xml` use that origin. This is one page; section anchors are not separate sitemap URLs.
+
+`vercel.json` configures Vite, `npm run build`, `dist`, immutable caching for hashed assets and basic response security headers. No rewrites or server runtime are needed. No backend, forms, analytics, cookies, authentication or database are added.
+
+Deployment procedure:
+
+```sh
+npx vercel login
+npx vercel deploy --yes
+# Read the real preview URL and test it; inspect the project's real production alias.
+# Set VITE_SITE_URL to that HTTPS production origin in Vercel's Production environment.
+npx vercel env add VITE_SITE_URL production
+npx vercel deploy --prod --yes
+# Test the exact returned production URL, including metadata and fallbacks.
+```
+
+Do not substitute an invented domain. Current authentication status and verification outcome are recorded in UPGRADE_AUDIT.md. No production URL is claimed until deployment is reachable. Avoid paid-plan selection or domain purchases.
+
+## Performance
+
+See [PERFORMANCE.md](PERFORMANCE.md) for baseline/final bytes and methodology. Main JS is smaller after removing Framer Motion, but Three/Fiber introduces a substantial optional chunk. Deferred does not mean free: eligible desktop users download and parse that chunk. Phones/reduced-motion devices skip it; offscreen and idle rendering stop. No WebGL portrait texture means no second portrait download. The font is one local Latin WOFF2. Build output has an honest large-chunk warning for the optional renderer; do not increase the warning threshold to disguise it.
