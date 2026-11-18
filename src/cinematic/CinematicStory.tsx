@@ -1,6 +1,7 @@
 import { useRef, useState, type PointerEvent } from 'react'
 import { ArrowDown, ArrowUpRight, ChevronRight, Github, Mail, MoveUpRight } from 'lucide-react'
-import { m, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
+import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
+import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
 import './CinematicStory.css'
 
@@ -39,7 +40,7 @@ function Entrance() {
       </m.div>
       <m.div className="film-portrait-wrap" style={reduce?undefined:{y:portraitY}}>
         <div className="film-portrait-spotlight" aria-hidden="true"/>
-        <m.img className="film-portrait" src="/hero-portrait-cutout.webp" onError={e=>{e.currentTarget.src='/fallback-portrait.jpg'}} width="1122" height="1402" alt="Dwaraknath Balaji in a black suit" fetchPriority="high" initial={reduce?false:{opacity:0,y:95,scale:.94}} animate={{opacity:1,y:0,scale:1}} transition={{duration:1.35,delay:.15,ease}}/>
+        <m.img className="film-portrait" src="/hero-portrait-cutout.webp" onError={e=>{e.currentTarget.onerror=null; e.currentTarget.src=fallbackPortrait}} width="1122" height="1402" alt="Dwaraknath Balaji in a black suit" fetchPriority="high" initial={reduce?false:{opacity:0,y:95,scale:.94}} animate={{opacity:1,y:0,scale:1}} transition={{duration:1.35,delay:.15,ease}}/>
       </m.div>
       <div className="film-entrance-bottom">
         <span>BUILDING SYSTEMS THAT <strong>RETRIEVE, REASON & ACT.</strong></span>
@@ -84,7 +85,6 @@ const years=[2024,2025,2026]
 function TimeMachine() {
   const [year,setYear]=useState(2025)
   const reduce=useReducedMotion()
-  const angle=useSpring((year-2024)*48-48,{stiffness:105,damping:20})
   function handlePointerMove(e:PointerEvent<HTMLDivElement>) {
     if(e.pointerType!=='mouse')return
     const rect=e.currentTarget.getBoundingClientRect()
@@ -97,14 +97,14 @@ function TimeMachine() {
         <p className="film-kicker">03 / TIME MACHINE</p>
         <div className="film-time-head"><h2>THE MAKING<br/>OF AN <em>ENGINEER.</em></h2><p>From the foundations of software to dependable AI systems. Choose a year to explore the journey.</p></div>
         <div className="film-clock-zone" onPointerMove={handlePointerMove}>
-          <div className="film-clock" aria-hidden="true"><div className="film-clock-face"><span>12</span><span>03</span><span>06</span><span>09</span></div><m.div className="film-clock-hand" animate={reduce?undefined:{rotate:(year-2024)*48-48}} style={reduce?undefined:{rotate:angle}}/><span className="film-clock-pin"/></div>
+          <div className="film-clock" aria-hidden="true"><div className="film-clock-face"><span>12</span><span>03</span><span>06</span><span>09</span></div><m.div className="film-clock-hand" animate={reduce?undefined:{rotate:(year-2024)*48-48}} transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 105, damping: 20 }}/><span className="film-clock-pin"/></div>
           <div className="film-year-readout" aria-live="polite">{year}</div>
           <div className="film-year-buttons" aria-label="Choose a timeline year">
             {years.map(y=><button type="button" aria-pressed={year===y} className={year===y?'is-active':''} key={y} onClick={()=>setYear(y)}>{y}</button>)}
           </div>
         </div>
         <div className="film-timeline-items">
-          {career.filter(item=>item.years.includes(year)).map(item=><article key={item.title} className="film-timeline-card"><span>{item.period}</span><div><h3>{item.title}</h3><p className="film-timeline-place">{item.company}</p><p>{item.description}</p></div></article>)}
+          {career.filter(item=>(item.years as readonly number[]).includes(year)).map(item=><article key={item.title} className="film-timeline-card"><span>{item.period}</span><div><h3>{item.title}</h3><p className="film-timeline-place">{item.company}</p><p>{item.description}</p></div></article>)}
         </div>
       </div>
     </section>
