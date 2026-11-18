@@ -187,3 +187,43 @@ body { background: #090d16; }
   .interlude-discipline, .interlude-link, .hero-cinematic .hero-portrait img { transition: none; }
   .interlude-discipline:hover { transform: none; }
 }
+
+
+/* Phase 2: cinematic depth pass. Layers stay CSS-only and respect reduced motion. */
+.hero-cinematic .hero-portrait {
+  transform-style: preserve-3d;
+  will-change: transform;
+  border: 1px solid rgba(166, 208, 255, .42);
+  box-shadow: 0 38px 120px rgba(1, 5, 16, .8), 0 0 110px rgba(55, 132, 222, .18);
+}
+.hero-cinematic .hero-portrait::before {
+  position: absolute; inset: -1px; z-index: 2; pointer-events: none; content: '';
+  background: linear-gradient(125deg, rgba(220, 238, 255, .18), transparent 31%, transparent 68%, rgba(100, 162, 248, .12));
+  mix-blend-mode: screen;
+}
+.hero-portrait-beam {
+  position: absolute; z-index: 2; pointer-events: none;
+  inset: -55% -85% -55% 30%;
+  background: linear-gradient(115deg, transparent 39%, rgba(131, 194, 255, .10) 48%, rgba(213, 235, 255, .16) 50%, rgba(131, 194, 255, .07) 52%, transparent 60%);
+  transform: rotate(7deg);
+  animation: portrait-beam-sweep 12s ease-in-out infinite alternate;
+}
+.hero-portrait-glare { position: absolute; inset: 0; z-index: 2; pointer-events: none; mix-blend-mode: screen; }
+.hero-cinematic .hero-portrait img {
+  filter: saturate(.87) contrast(1.1) brightness(.88);
+  transition: filter 700ms ease, transform 900ms cubic-bezier(.22,1,.36,1);
+}
+.hero-cinematic .hero-portrait:hover img { filter: saturate(1.06) contrast(1.09) brightness(.94); }
+.hero-cinematic .hero-portrait figcaption { text-shadow: 0 2px 15px #000b; }
+.hero-cinematic .hero-title-line:last-child { padding-right: .065em; }
+@keyframes portrait-beam-sweep {
+  from { transform: translateX(-26%) rotate(7deg); opacity: .48; }
+  to { transform: translateX(13%) rotate(7deg); opacity: .8; }
+}
+@media (max-width: 1023px) {
+  .hero-portrait-beam { animation: none; opacity: .38; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-portrait-beam { animation: none; }
+  .hero-cinematic .hero-portrait { will-change: auto; }
+}
