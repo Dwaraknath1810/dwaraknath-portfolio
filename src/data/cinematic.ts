@@ -8,7 +8,7 @@ export const identity = {
 } as const
 
 export const skillGroups = [
-  {title:'GENERATIVE INTELLIGENCE', skills:['RAG','LLMs','Agentic AI','LangChain','LangGraph','LangSmith','Claude workflows','AWS Bedrock','Azure OpenAI GPT-4o','MCP']},
+  {title:'GENERATIVE INTELLIGENCE', skills:['RAG','LLMs','Agentic AI','LangChain','LangGraph','LangSmith','Claude workflows','Claude','ChatGPT','AWS Bedrock','Azure OpenAI GPT-4o','MCP']},
   {title:'RETRIEVAL & DATA', skills:['Qdrant','FAISS','Elasticsearch','PostgreSQL','Knowledge-base ingestion','Document processing','Semantic Search','Pandas','NumPy']},
   {title:'ENGINEERING & CLOUD', skills:['Python','FastAPI','REST APIs','OAuth 2.0','RBAC','AWS','Azure','Docker','Jenkins CI/CD','Git','GitHub']},
   {title:'EVALUATION & ML', skills:['RAG benchmarking','Groundedness','Hallucination testing','Citation accuracy','Pytest','Locust','TensorFlow','Keras','Scikit-learn','OpenCV']},
@@ -83,8 +83,10 @@ export const featuredProjects = [
 export const credentials = {
   degree:'B.TECH AI & DATA SCIENCE · CGPA 8.65/10',
   aws:'AWS CERTIFIED DEVELOPER – ASSOCIATE',
-  publication:'MRTM 2023 · DEEP REINFORCEMENT LEARNING PAPER',
+  publication:'MRTM 2023 · ENERGY-EFFICIENT IoT RESOURCE ALLOCATION USING DEEP REINFORCEMENT LEARNING',
   hackathon:'SONA COLLEGE HACKATHON · 2ND PLACE',
+  microsoft:'MICROSOFT AI AND ML ENGINEERING · COURSERA',
+  google:'GOOGLE DATA ANALYTICS · COURSERA',
 } as const
 
 export const contactLinks = {
