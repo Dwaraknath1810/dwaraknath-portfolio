@@ -3,6 +3,8 @@ import { Header } from './components/layout/Header'
 import { Footer } from './components/layout/Footer'
 import { Hero } from './sections/Hero'
 import { About } from './sections/About'
+import { Interlude } from './sections/Interlude'
+import './styles/cinematic.css'
 import { Expertise } from './sections/Expertise'
 import { Projects } from './sections/Projects'
 import { Experience } from './sections/Experience'
@@ -22,6 +24,7 @@ export default function App() {
           <Hero />
           <About />
           <Expertise />
+          <Interlude />
           <Projects />
           <Experience />
           <Capabilities />
