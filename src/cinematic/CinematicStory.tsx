@@ -153,6 +153,8 @@ function Finale() {
           <span>{credentials.aws}</span>
           <span>{credentials.publication}</span>
           <span>{credentials.hackathon}</span>
+          <span>{credentials.microsoft}</span>
+          <span>{credentials.google}</span>
         </div>
         <div className="film-finale-foot"><span>DWARAKNATH BALAJI — PORTFOLIO {new Date().getFullYear()}</span><a href="#intro">BACK TO THE OPENING ↑</a></div>
       </div>
