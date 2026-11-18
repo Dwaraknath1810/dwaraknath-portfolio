@@ -96,8 +96,8 @@ function TimeMachine() {
       <div className="film-scene-content">
         <p className="film-kicker">03 / TIME MACHINE</p>
         <div className="film-time-head"><h2>THE MAKING<br/>OF AN <em>ENGINEER.</em></h2><p>From the foundations of software to dependable AI systems. Choose a year to explore the journey.</p></div>
-        <div className="film-clock-zone" onPointerMove={handlePointerMove}>
-          <div className="film-clock" aria-hidden="true"><div className="film-clock-face"><span>12</span><span>03</span><span>06</span><span>09</span></div><m.div className="film-clock-hand" animate={reduce?undefined:{rotate:(year-2024)*48-48}} transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 105, damping: 20 }}/><span className="film-clock-pin"/></div>
+        <div className="film-clock-zone">
+          <div className="film-clock" aria-hidden="true" onPointerMove={handlePointerMove}><div className="film-clock-face"><span>12</span><span>03</span><span>06</span><span>09</span></div><m.div className="film-clock-hand" animate={reduce?undefined:{rotate:(year-2024)*48-48}} transition={reduce ? { duration: 0 } : { type: 'spring', stiffness: 105, damping: 20 }}/><span className="film-clock-pin"/></div>
           <div className="film-year-readout" aria-live="polite">{year}</div>
           <div className="film-year-buttons" aria-label="Choose a timeline year">
             {years.map(y=><button type="button" aria-pressed={year===y} className={year===y?'is-active':''} key={y} onClick={()=>setYear(y)}>{y}</button>)}

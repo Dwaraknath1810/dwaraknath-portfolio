@@ -197,3 +197,86 @@
 @media (prefers-reduced-motion:reduce){
  .film-app *, .film-app *::before, .film-app *::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}
 }
+
+
+/* Visual QA fixes from the 19 November screen recording.
+   Keep the portrait on the right and the complete name on the left. */
+@media (min-width: 1101px) {
+  .film-entrance-type {
+    padding-left: clamp(28px, 6vw, 104px);
+    padding-right: 0;
+    width: 59%;
+    margin-top: -5vh;
+  }
+  .film-entrance-type h1 {
+    font-size: clamp(50px, 5.55vw, 104px);
+    line-height: .99;
+    letter-spacing: -.073em;
+    max-width: 100%;
+  }
+  .film-entrance-type h1 > span { white-space: nowrap; }
+  .film-title-second { margin-left: 0; }
+  .film-portrait-wrap { inset: 8% -2% 0 55%; }
+  .film-entrance-subtitle { letter-spacing: .12em; line-height: 1.8; }
+}
+@media (min-width: 701px) and (max-width: 1100px) {
+  .film-entrance-type {
+    width: 60%;
+    padding-left: clamp(30px, 5vw, 60px);
+    padding-right: 0;
+    margin-top: -2vh;
+  }
+  .film-entrance-type h1 {
+    font-size: clamp(43px, 5.3vw, 62px);
+    line-height: 1.02;
+    letter-spacing: -.075em;
+  }
+  .film-entrance-type h1 > span { white-space: nowrap; }
+  .film-title-second { margin-left: 0; }
+  .film-portrait-wrap { inset: 14% -9% 0 55%; }
+  .film-entrance-subtitle { font-size: 10px; line-height: 1.8; letter-spacing: .06em; }
+}
+@media (max-width: 700px) {
+  .film-entrance-type {
+    width: 100%;
+    margin-top: 140px;
+    padding-inline: 20px;
+  }
+  .film-entrance-type h1 {
+    font-size: clamp(30px, 7.35vw, 49px);
+    line-height: 1.08;
+    letter-spacing: -.07em;
+    max-width: 100%;
+  }
+  .film-entrance-type h1 > span { white-space: nowrap; }
+  .film-title-second { margin-left: 0; }
+  .film-entrance-subtitle {
+    max-width: 280px;
+    font-size: 10px;
+    line-height: 1.6;
+    letter-spacing: .035em;
+    margin-top: 18px;
+  }
+  .film-portrait-wrap { inset: 32% -14% 0 6%; }
+  .film-side-label { top: 94px; }
+  .film-entrance-bottom { background: linear-gradient(0deg,#06070a,transparent); }
+}
+@media (max-width: 390px) {
+  .film-entrance-type h1 { font-size: clamp(26px, 7.15vw, 30px); }
+  .film-entrance-type { padding-inline: 16px; }
+  .film-portrait-wrap { inset: 35% -17% 0 4%; }
+}
+/* Improve legibility of information-heavy timeline and project descriptions. */
+.film-timeline-card p { font-size: 13px; line-height: 1.85; }
+.film-timeline-card .film-timeline-place { font-size: 12px; }
+.film-project-information > p { font-size: 14px; }
+.film-project-information > span { line-height: 1.7; }
+.film-skill-card p { font-size: 12px; }
+.film-year-buttons button:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+@media (max-width: 700px) {
+  .film-universe-content h2,
+  .film-time h2,
+  .film-projects h2 { overflow-wrap: anywhere; }
+  .film-project-information h3 { overflow-wrap: anywhere; }
+  .film-timeline-card p { font-size: 13px; }
+}
