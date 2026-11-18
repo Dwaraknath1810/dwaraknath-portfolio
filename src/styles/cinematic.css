@@ -227,3 +227,66 @@ body { background: #090d16; }
   .hero-portrait-beam { animation: none; }
   .hero-cinematic .hero-portrait { will-change: auto; }
 }
+
+
+/* Phase 3: transparent cinematic hero portrait. The original image remains the fallback. */
+.hero-cinematic .hero-portrait--cutout {
+  overflow: visible;
+  isolation: isolate;
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+.hero-cinematic .hero-portrait--cutout::before,
+.hero-cinematic .hero-portrait--cutout::after { display: none; }
+.hero-cinematic .hero-portrait--cutout .hero-portrait-halo {
+  z-index: -1;
+  inset: 5% -6% 0;
+  background: radial-gradient(ellipse 54% 40% at 55% 40%, rgba(40,119,205,.33), transparent 84%),
+              radial-gradient(ellipse 55% 50% at 60% 76%, rgba(60,45,130,.20), transparent 100%);
+  filter: blur(27px);
+  mix-blend-mode: normal;
+}
+.hero-cinematic .hero-portrait--cutout img {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 20px 60px rgba(0,0,0,.55));
+  transform: scale(1.09);
+  transform-origin: center bottom;
+  transition: filter .7s ease, transform .9s cubic-bezier(.22,1,.36,1);
+}
+.hero-cinematic .hero-portrait--cutout:hover img {
+  filter: drop-shadow(0 26px 75px rgba(0,0,0,.65));
+  transform: scale(1.11);
+}
+.hero-cinematic .hero-portrait--cutout .hero-portrait-beam,
+.hero-cinematic .hero-portrait--cutout .hero-portrait-glare,
+.hero-cinematic .hero-portrait--cutout .hero-scan-corners,
+.hero-cinematic .hero-portrait--cutout figcaption { display: none; }
+.hero-cinematic .hero-portrait--cutout .hero-portrait-halo { pointer-events: none; }
+@media (max-width: 1023px) {
+  .hero-cinematic .hero-portrait--cutout img { transform: scale(1.06); }
+  .hero-cinematic .hero-portrait--cutout:hover img { transform: scale(1.06); }
+}
+@media (max-width: 640px) {
+  .hero-cinematic .hero-portrait--cutout {
+    margin-top: 44px;
+    width: 94%;
+    aspect-ratio: .83;
+    right: 0;
+  }
+  .hero-cinematic .hero-portrait--cutout img,
+  .hero-cinematic .hero-portrait--cutout:hover img {
+    transform: scale(1.02);
+    transform-origin: center bottom;
+    object-position: center bottom;
+  }
+  .hero-cinematic .hero-portrait--cutout .hero-portrait-halo { filter: blur(15px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-cinematic .hero-portrait--cutout img { transition: none; }
+}
