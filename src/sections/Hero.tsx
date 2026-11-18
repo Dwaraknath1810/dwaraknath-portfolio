@@ -1,14 +1,47 @@
+import { useRef, type PointerEvent } from 'react'
 import { ArrowDown, ArrowUpRight } from 'lucide-react'
-import { m, useReducedMotion } from 'framer-motion'
+import { m, useMotionTemplate, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
 import portrait from '../assets/dwaraknath-portrait.jpg'
 import portraitSmall from '../assets/dwaraknath-portrait-small.jpg'
 import { identity } from '../data/portfolio'
 
 export function Hero() {
   const reduced = useReducedMotion()
+  const sectionRef = useRef<HTMLElement>(null)
+  const pointerX = useMotionValue(0)
+  const pointerY = useMotionValue(0)
+  const lightX = useMotionValue(50)
+  const lightY = useMotionValue(35)
+  const rotateY = useSpring(pointerX, { stiffness: 110, damping: 22 })
+  const rotateX = useSpring(pointerY, { stiffness: 110, damping: 22 })
+  const glare = useMotionTemplate`radial-gradient(circle at ${lightX}% ${lightY}%, rgba(180, 216, 255, 0.24), transparent 42%)`
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const portraitScrollY = useTransform(scrollYProgress, [0, 1], [0, 64])
+  const copyScrollY = useTransform(scrollYProgress, [0, 1], [0, -32])
+
+  function handlePointerMove(event: PointerEvent<HTMLElement>) {
+    if (reduced || event.pointerType !== 'mouse') return
+    const rect = event.currentTarget.getBoundingClientRect()
+    const x = (event.clientX - rect.left) / rect.width - 0.5
+    const y = (event.clientY - rect.top) / rect.height - 0.5
+    pointerX.set(x * 7)
+    pointerY.set(y * -7)
+    lightX.set((x + 0.5) * 100)
+    lightY.set((y + 0.5) * 100)
+  }
+
+  function resetPointer() {
+    pointerX.set(0)
+    pointerY.set(0)
+    lightX.set(50)
+    lightY.set(35)
+  }
 
   return (
-    <section id="top" className="hero shell hero-cinematic" aria-labelledby="hero-title">
+    <section id="top" className="hero shell hero-cinematic" aria-labelledby="hero-title" ref={sectionRef}>
       <div className="hero-topline eyebrow">
         <span>
           <i className="status-dot" />
@@ -22,6 +55,9 @@ export function Hero() {
         <div className="hero-atmosphere" aria-hidden="true"><span /><span /><span /></div>
         <m.figure
           className="hero-portrait"
+          onPointerMove={handlePointerMove}
+          onPointerLeave={resetPointer}
+          style={reduced ? undefined : { y: portraitScrollY, rotateX, rotateY, transformPerspective: 1100 }}
           initial={
             reduced ? false : { opacity: 0.5, clipPath: 'inset(0 0 18% 0)' }
           }
@@ -29,6 +65,8 @@ export function Hero() {
           transition={{ duration: reduced ? 0 : 1.15, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="hero-portrait-halo" aria-hidden="true" />
+          <div className="hero-portrait-beam" aria-hidden="true" />
+          <m.div className="hero-portrait-glare" style={reduced ? undefined : { background: glare }} aria-hidden="true" />
           <img
             src={portrait}
             srcSet={`${portraitSmall} 576w, ${portrait} 1122w`}
@@ -44,7 +82,7 @@ export function Hero() {
             <span>Based in {identity.location}</span>
           </figcaption>
         </m.figure>
-        <div className="hero-copy">
+        <m.div className="hero-copy" style={reduced ? undefined : { y: copyScrollY }}>
           <p className="hero-name eyebrow"><span className="hero-name-index">01 / INTRODUCTION</span>{identity.name}</p>
           <h1 id="hero-title">
             <span className="hero-title-line">
@@ -76,7 +114,7 @@ export function Hero() {
               </a>
             </div>
           </div>
-        </div>
+        </m.div>
         <div className="portrait-index eyebrow" aria-hidden="true">
           Human perspective. Machine intelligence.
         </div>
