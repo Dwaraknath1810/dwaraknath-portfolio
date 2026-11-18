@@ -1,12 +1,15 @@
-import { useRef, type PointerEvent } from 'react'
+import { useRef, useState, type PointerEvent } from 'react'
 import { ArrowDown, ArrowUpRight } from 'lucide-react'
 import { m, useMotionTemplate, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from 'framer-motion'
-import portrait from '../assets/dwaraknath-portrait.jpg'
-import portraitSmall from '../assets/dwaraknath-portrait-small.jpg'
+import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
+import fallbackPortraitSmall from '../assets/dwaraknath-portrait-small.jpg'
 import { identity } from '../data/portfolio'
 
 export function Hero() {
   const reduced = useReducedMotion()
+  // The optimized transparent portrait lives in public/hero-portrait-cutout.webp.
+  // Retain the original photograph as a safe fallback until the asset is uploaded.
+  const [showCutout, setShowCutout] = useState(true)
   const sectionRef = useRef<HTMLElement>(null)
   const pointerX = useMotionValue(0)
   const pointerY = useMotionValue(0)
@@ -54,7 +57,7 @@ export function Hero() {
       <div className="hero-composition">
         <div className="hero-atmosphere" aria-hidden="true"><span /><span /><span /></div>
         <m.figure
-          className="hero-portrait"
+          className={`hero-portrait${showCutout ? " hero-portrait--cutout" : ""}`}
           onPointerMove={handlePointerMove}
           onPointerLeave={resetPointer}
           style={reduced ? undefined : { y: portraitScrollY, rotateX, rotateY, transformPerspective: 1100 }}
@@ -68,13 +71,17 @@ export function Hero() {
           <div className="hero-portrait-beam" aria-hidden="true" />
           <m.div className="hero-portrait-glare" style={reduced ? undefined : { background: glare }} aria-hidden="true" />
           <img
-            src={portrait}
-            srcSet={`${portraitSmall} 576w, ${portrait} 1122w`}
-            sizes="(max-width: 640px) 82vw, (max-width: 1024px) 49vw, 42vw"
+            src={showCutout ? '/hero-portrait-cutout.webp' : fallbackPortrait}
+            srcSet={showCutout ? undefined : `${fallbackPortraitSmall} 576w, ${fallbackPortrait} 1122w`}
+            sizes="(max-width: 640px) 86vw, (max-width: 1024px) 49vw, 42vw"
             width="1122"
             height="1402"
             fetchPriority="high"
-            alt="Dwaraknath Balaji wearing a dark suit, photographed against a neutral background."
+            decoding="async"
+            onError={() => setShowCutout(false)}
+            alt={showCutout
+              ? 'Dwaraknath Balaji smiling in a black suit against a cinematic navy backdrop.'
+              : 'Dwaraknath Balaji wearing a dark suit against a neutral background.'}
           />
           <div className="hero-scan-corners" aria-hidden="true"><span /><span /><span /><span /></div>
           <figcaption className="eyebrow">
