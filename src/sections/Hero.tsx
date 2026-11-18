@@ -8,7 +8,7 @@ export function Hero() {
   const reduced = useReducedMotion()
 
   return (
-    <section id="top" className="hero shell" aria-labelledby="hero-title">
+    <section id="top" className="hero shell hero-cinematic" aria-labelledby="hero-title">
       <div className="hero-topline eyebrow">
         <span>
           <i className="status-dot" />
@@ -19,6 +19,7 @@ export function Hero() {
         </span>
       </div>
       <div className="hero-composition">
+        <div className="hero-atmosphere" aria-hidden="true"><span /><span /><span /></div>
         <m.figure
           className="hero-portrait"
           initial={
@@ -27,6 +28,7 @@ export function Hero() {
           animate={{ opacity: 1, clipPath: 'inset(0% 0 0 0)' }}
           transition={{ duration: reduced ? 0 : 1.15, ease: [0.22, 1, 0.36, 1] }}
         >
+          <div className="hero-portrait-halo" aria-hidden="true" />
           <img
             src={portrait}
             srcSet={`${portraitSmall} 576w, ${portrait} 1122w`}
@@ -36,13 +38,14 @@ export function Hero() {
             fetchPriority="high"
             alt="Dwaraknath Balaji wearing a dark suit, photographed against a neutral background."
           />
+          <div className="hero-scan-corners" aria-hidden="true"><span /><span /><span /><span /></div>
           <figcaption className="eyebrow">
             <span>{identity.name}</span>
             <span>Based in {identity.location}</span>
           </figcaption>
         </m.figure>
         <div className="hero-copy">
-          <p className="hero-name eyebrow">{identity.name}</p>
+          <p className="hero-name eyebrow"><span className="hero-name-index">01 / INTRODUCTION</span>{identity.name}</p>
           <h1 id="hero-title">
             <span className="hero-title-line">
               <m.span
@@ -62,6 +65,7 @@ export function Hero() {
             </span>
           </h1>
           <div className="hero-intro">
+            <p className="hero-overline eyebrow">Designing what intelligence becomes.</p>
             <p>{identity.positioning}</p>
             <div className="hero-links flex flex-wrap items-center gap-x-8 gap-y-4">
               <a className="text-link" href="#work">
