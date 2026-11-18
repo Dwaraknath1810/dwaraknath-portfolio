@@ -1,5 +1,5 @@
 import { useRef, useState, type PointerEvent } from 'react'
-import { ArrowDown, ChevronRight, Github, Mail, MoveUpRight } from 'lucide-react'
+import { ArrowDown, ChevronRight, GitBranch, Mail, MoveUpRight } from 'lucide-react'
 import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
@@ -146,7 +146,7 @@ function Finale() {
         <p className="film-finale-statement">From retrieval to reasoning. From ideas to systems you can trust.</p>
         <div className="film-finale-links">
           <a href={contactLinks.email} aria-label="Send an email to Dwaraknath Balaji"><Mail size={18}/> EMAIL <MoveUpRight size={16}/></a>
-          <a href={contactLinks.github} target="_blank" rel="noopener noreferrer"><Github size={18}/> GITHUB <MoveUpRight size={16}/></a>
+          <a href={contactLinks.github} target="_blank" rel="noopener noreferrer"><GitBranch size={18}/> GITHUB <MoveUpRight size={16}/></a>
         </div>
         <div className="film-accolades">
           <span>{credentials.degree}</span>
