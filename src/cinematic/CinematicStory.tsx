@@ -1,5 +1,5 @@
 import { useRef, useState, type PointerEvent } from 'react'
-import { ArrowDown, ArrowUpRight, ChevronRight, Github, Mail, MoveUpRight } from 'lucide-react'
+import { ArrowDown, ChevronRight, Github, Mail, MoveUpRight } from 'lucide-react'
 import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
