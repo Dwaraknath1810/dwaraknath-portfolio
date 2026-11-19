@@ -89,3 +89,14 @@
  .film-workbench-feature,.film-workbench-tool{transition:none}
  .film-workbench-feature:hover,.film-workbench-tool:hover{transform:none}
 }
+
+/* Inline, keyboard-accessible project engineering notes. */
+.film-project-details{margin-top:25px;border-top:1px solid #8d94b855}
+.film-project-details summary{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:19px 0;color:#f2d2d0;font-size:11px;font-weight:650;letter-spacing:.1em;text-transform:uppercase}
+.film-project-details summary span{font-size:22px;transition:transform .2s}
+.film-project-details[open] summary span{transform:rotate(45deg)}
+.film-project-detail-content{display:grid;gap:22px;padding:3px 0 22px}
+.film-project-detail-content h4{margin:0;font-size:10px;letter-spacing:.15em;color:#e8a09d}
+.film-project-detail-content p{font-size:13px;line-height:1.75;color:#c2bed0;margin-top:10px}
+.film-project-details summary:focus-visible{outline:2px solid #ffe1de;outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.film-project-details summary span{transition:none}}
