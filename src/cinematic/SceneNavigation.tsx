@@ -4,6 +4,7 @@ const chapters = [
   { id: 'intro', label: 'The Opening', number: '01' },
   { id: 'universe', label: 'Intelligence Universe', number: '02' },
   { id: 'timeline', label: 'Time Machine', number: '03' },
+  { id: 'workbench', label: 'AI Workbench', number: '03A' },
   { id: 'projects', label: 'Project Universe', number: '04' },
   { id: 'finale', label: 'The Finale', number: '05' },
 ] as const
