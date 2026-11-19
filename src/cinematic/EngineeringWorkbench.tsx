@@ -1,6 +1,7 @@
 import { m, useReducedMotion } from 'framer-motion'
 import { ArrowUpRight, CheckCircle2, CircuitBoard, FlaskConical, Layers3, Sparkles } from 'lucide-react'
 import { engineeringPipeline, engineeringTools, evidenceHighlights, featuredAIWorkspaces } from '../data/cinematic'
+import './EngineeringWorkbench.css'
 
 export function EngineeringWorkbench() {
   const reduced=useReducedMotion()
