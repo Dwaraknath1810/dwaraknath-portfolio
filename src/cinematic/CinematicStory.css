@@ -674,3 +674,13 @@
 @media (prefers-reduced-motion: reduce) {
   .film-resume-link--hero, .film-project-source { transition: none; }
 }
+
+
+.film-project-plot-pair { display: grid; gap: 18px; }
+.film-project-evidence-image { min-width: 0; padding: 14px; border: 1px solid rgba(164,178,210,.23); background: rgba(13,20,35,.55); border-radius: 8px; }
+.film-project-evidence-image img { max-width: 100%; }
+.film-project-plot-pair > .film-project-evidence-source { margin-top: 0; }
+@media (min-width: 1150px) {
+  .film-project-plot-pair { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .film-project-plot-pair > .film-project-evidence-source { grid-column: 1 / -1; }
+}
