@@ -8,6 +8,7 @@ import { ScrollProgress } from './ScrollProgress'
 import { SceneNavigation } from './SceneNavigation'
 import { SceneDivider } from './SceneDivider'
 import { EngineeringWorkbench } from './EngineeringWorkbench'
+import { RecruiterOverview } from './RecruiterOverview'
 import './CinematicStory.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -20,7 +21,7 @@ function StoryHeader() {
       <span className="film-header-label">DWARAKNATH BALAJI <i /> AI SOFTWARE ENGINEER</span>
       <button className="film-menu-button" type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="film-nav">MENU <span>{menu ? '−' : '+'}</span></button>
       <nav id="film-nav" className={menu ? 'film-navigation is-open' : 'film-navigation'} aria-label="Portfolio scenes">
-        {[['intro','Introduction'],['universe','The work'],['timeline','Timeline'],['workbench','Tools & Work'],['projects','Projects'],['finale','Contact']].map(([id,label])=><a key={id} onClick={()=>setMenu(false)} href={`#${id}`}>{label}</a>)}
+        {[['intro','Introduction'],['snapshot','Quick Brief'],['universe','The work'],['timeline','Timeline'],['workbench','Tools & Work'],['projects','Projects'],['finale','Contact']].map(([id,label])=><a key={id} onClick={()=>setMenu(false)} href={`#${id}`}>{label}</a>)}
       </nav>
     </header>
   )
@@ -45,6 +46,7 @@ function Entrance() {
         <h1><m.span initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,ease}}>DWARAKNATH</m.span><m.span className="film-title-second" initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,delay:.15,ease}}>BALAJI<span className="film-accent">.</span></m.span></h1>
         <m.p className="film-entrance-subtitle" initial={reduce?false:{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.55}}>AI SOFTWARE ENGINEER <span>—</span> RAG / LLMs / AGENTIC SYSTEMS</m.p>
         <a className="film-resume-link film-resume-link--hero" href="/Dwaraknath_Balaji_AI_Engineer_Resume.pdf" download="Dwaraknath_Balaji_AI_Engineer_Resume.pdf">DOWNLOAD RESUME <span aria-hidden="true">↓</span></a>
+        <a className="film-brief-anchor" href="#snapshot">SKIP TO THE QUICK BRIEF <ChevronRight size={15} aria-hidden="true"/></a>
       </m.div>
       <m.div className="film-portrait-wrap" style={reduce?undefined:{y:portraitY}}>
         <div className="film-portrait-spotlight" aria-hidden="true"/>
@@ -185,6 +187,7 @@ export function CinematicStory() {
       <SceneNavigation/>
       <main>
         <Entrance/>
+        <RecruiterOverview/>
         <SceneDivider step={0}/>
         <Universe/>
         <SceneDivider step={1}/>
