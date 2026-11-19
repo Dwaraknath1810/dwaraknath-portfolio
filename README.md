@@ -1,6 +1,21 @@
-# Dwaraknath Balaji — AI Engineer
+# Dwaraknath Balaji — AI Software Engineer Portfolio
 
-An editorial portfolio built with React, TypeScript, Vite, Tailwind CSS, Framer Motion, and Lucide React. All content and assets are local. No account, API key, backend, or production domain is required.
+An interactive, five-scene cinematic portfolio built with React, TypeScript, Vite, Framer Motion, and Lucide React. The public-facing site showcases enterprise AI engineering experience, RAG architecture concepts, toolchain, career history, and verifiable machine-learning projects.
+
+## Verified resume and public case studies
+
+- Public two-page resume: [Dwaraknath Balaji — AI Software Engineer](public/Dwaraknath_Balaji_AI_Engineer_Resume.pdf) (provided by the owner, 19 November 2026).
+- [Driver Drowsiness Detection](https://github.com/Dwaraknath1810/Driver-drowsiness-detection) — original notebook source; training curves extracted from the notebook and stored locally under `public/projects/`.
+- [Sentiment Analysis](https://github.com/Dwaraknath1810/Sentimental-analysis) — public Jupyter notebook.
+- Enterprise AI and agentic workflow case studies use original **conceptual** architecture diagrams only. They do not disclose proprietary software names, private implementation details, or fabricated project screenshots.
+
+Performance figures on the site (92% model classification accuracy and 88% F1-score) originate in the submitted resume. They are not portrayed as independently audited benchmarks. Original diagrams carry explicit conceptual labels.
+
+## Portfolio content maintenance
+
+Update `src/data/cinematic.ts` for current experience, public repository links, capabilities, citations and portfolio metrics. Components for the live five-scene site are in `src/cinematic/`; older `src/sections/` components remain in source but are not used by the live entry point.
+
+
 
 ## Local development
 

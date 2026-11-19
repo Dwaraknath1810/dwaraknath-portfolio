@@ -587,3 +587,100 @@
 @media (max-width: 700px) {
   .film-scene-navigation { display: none; }
 }
+
+
+/* V5 recruiter essentials: lightweight downloadable resume and working links. */
+.film-resume-link--hero {
+  display: inline-flex;
+  gap: 16px;
+  align-items: center;
+  width: max-content;
+  max-width: 100%;
+  margin-top: 30px;
+  padding: 14px 18px;
+  border: 1px solid rgba(255,177,161,.65);
+  border-radius: 4px;
+  color: #fff6f4;
+  background: rgba(24,21,31,.85);
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: .14em;
+  pointer-events: auto;
+  transition: color .2s ease, border-color .2s ease, background .2s ease;
+}
+.film-resume-link--hero:hover, .film-resume-link--hero:focus-visible {
+  background: #843f48;
+  border-color: #ffc5b5;
+  color: #fff;
+}
+.film-resume-link--hero span { font-size: 18px; line-height: 1; }
+.film-project-source {
+  display: inline-flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 24px;
+  padding: 12px 14px;
+  border: 1px solid rgba(174,199,237,.55);
+  background: rgba(47,60,86,.34);
+  color: #f1f6ff !important;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-decoration: none;
+  transition: background .2s ease, border-color .2s ease;
+}
+.film-project-source:hover, .film-project-source:focus-visible {
+  background: rgba(107,126,165,.5);
+  border-color: #e7eaff;
+}
+.film-project-diagram, .film-project-evidence-image { margin: 0; max-width: 100%; }
+.film-project-diagram img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid rgba(133,161,205,.3);
+  border-radius: 8px;
+  background: #0b101b;
+}
+.film-project-evidence-image img {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+  margin: 0 auto;
+  border-radius: 8px;
+  background: #fff;
+}
+.film-project-diagram figcaption,
+.film-project-evidence-image figcaption {
+  margin-top: 10px;
+  color: #abb6cc;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.film-project-evidence-source {
+  font-size: 12px;
+  line-height: 1.6;
+  color: #b1b9ca;
+}
+@media (max-width: 700px) {
+  .film-resume-link--hero {
+    margin-top: 16px;
+    padding: 11px 12px;
+    font-size: 9px;
+    gap: 9px;
+  }
+  .film-project-source { font-size: 9px; max-width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-resume-link--hero, .film-project-source { transition: none; }
+}
+
+
+.film-project-plot-pair { display: grid; gap: 18px; }
+.film-project-evidence-image { min-width: 0; padding: 14px; border: 1px solid rgba(164,178,210,.23); background: rgba(13,20,35,.55); border-radius: 8px; }
+.film-project-evidence-image img { max-width: 100%; }
+.film-project-plot-pair > .film-project-evidence-source { margin-top: 0; }
+@media (min-width: 1150px) {
+  .film-project-plot-pair { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .film-project-plot-pair > .film-project-evidence-source { grid-column: 1 / -1; }
+}

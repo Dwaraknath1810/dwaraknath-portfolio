@@ -63,11 +63,28 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         <div className="film-project-tags" aria-label="Project technologies">
           {project.stack.map(technology => <span key={technology}>{technology}</span>)}
         </div>
+        {project.sourceUrl && <a className="film-project-source" href={project.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`View the public GitHub repository for ${project.name}`}>VIEW VERIFIED GITHUB CODE <span aria-hidden="true">↗</span></a>}
         <details className="film-project-details">
-          <summary>Explore my approach <span aria-hidden="true">+</span></summary>
+          <summary>Explore architecture & evidence <span aria-hidden="true">+</span></summary>
           <div className="film-project-detail-content">
+            <figure className="film-project-diagram">
+              <img src={project.diagram} alt={`Conceptual pipeline for ${project.name}`} loading="lazy" decoding="async" width="960" height="330"/>
+              <figcaption>{project.evidenceType}</figcaption>
+            </figure>
             <div><h4>HOW IT WORKS</h4><p>{project.notes.approach}</p></div>
             <div><h4>TESTING & EVIDENCE</h4><p>{project.notes.validation}</p></div>
+            {project.screenshot && <div className="film-project-plot-pair">
+              <figure className="film-project-evidence-image">
+                <img src={project.screenshot} alt="Training accuracy versus validation accuracy chart from the public driver drowsiness notebook" loading="lazy" decoding="async"/>
+                <figcaption>Actual model training accuracy plot from the public notebook</figcaption>
+              </figure>
+              <figure className="film-project-evidence-image">
+                <img src="/projects/driver-drowsiness-training-loss.png" alt="Training loss versus validation loss chart from the public driver drowsiness notebook" loading="lazy" decoding="async"/>
+                <figcaption>Actual training loss plot from the same notebook</figcaption>
+              </figure>
+              <p className="film-project-evidence-source">These notebook plots are not independent verification of the resume-reported 92% classification accuracy.</p>
+            </div>}
+            {project.sourceUrl ? <p className="film-project-evidence-source">Source code and notebook are available at the linked public GitHub repository.</p> : <p className="film-project-evidence-source">Professional experience summary only; confidential implementation details and screenshots are not public.</p>}
           </div>
         </details>
       </div>
