@@ -19,6 +19,8 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
+      - name: Portfolio asset, provenance and privacy checks
+        run: node scripts/validate-portfolio.mjs
       - name: ESLint
         run: npm run lint
       - name: TypeScript and production build
