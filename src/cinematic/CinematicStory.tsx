@@ -1,5 +1,5 @@
-import { useRef, useState, type PointerEvent } from 'react'
-import { ArrowDown, ChevronRight, GitBranch, Mail, MoveUpRight } from 'lucide-react'
+import { useEffect, useRef, useState, type PointerEvent } from 'react'
+import { ArrowDown, ChevronRight, GitBranch, Mail, Moon, MoveUpRight, Sun } from 'lucide-react'
 import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
@@ -13,12 +13,15 @@ import './CinematicStory.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
-function StoryHeader() {
+type Theme = 'dark' | 'light'
+
+function StoryHeader({ theme, onToggleTheme }: { theme: Theme; onToggleTheme: () => void }) {
   const [menu, setMenu] = useState(false)
   return (
     <header className="film-header">
       <a className="film-monogram" href="#intro" aria-label="Dwaraknath Balaji, home">DB<span>.</span></a>
       <span className="film-header-label">DWARAKNATH BALAJI <i /> AI SOFTWARE ENGINEER</span>
+      <button className="film-theme-toggle" type="button" onClick={onToggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`} aria-pressed={theme === 'light'}>{theme === 'dark' ? <Sun size={17} aria-hidden="true"/> : <Moon size={17} aria-hidden="true"/>}<span>{theme === 'dark' ? 'LIGHT' : 'DARK'}</span></button>
       <button className="film-menu-button" type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="film-nav">MENU <span>{menu ? '−' : '+'}</span></button>
       <nav id="film-nav" className={menu ? 'film-navigation is-open' : 'film-navigation'} aria-label="Portfolio scenes">
         {[['intro','Introduction'],['snapshot','Quick Brief'],['universe','The work'],['timeline','Timeline'],['workbench','Tools & Work'],['projects','Projects'],['finale','Contact']].map(([id,label])=><a key={id} onClick={()=>setMenu(false)} href={`#${id}`}>{label}</a>)}
@@ -45,8 +48,10 @@ function Entrance() {
         <m.p className="film-kicker" initial={reduce?false:{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.8}}>01 / THE OPENING — ENGINEERING INTELLIGENCE</m.p>
         <h1><m.span initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,ease}}>DWARAKNATH</m.span><m.span className="film-title-second" initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,delay:.15,ease}}>BALAJI<span className="film-accent">.</span></m.span></h1>
         <m.p className="film-entrance-subtitle" initial={reduce?false:{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.55}}>AI SOFTWARE ENGINEER <span>—</span> RAG / LLMs / AGENTIC SYSTEMS</m.p>
+        <div className="film-hero-actions">
         <a className="film-resume-link film-resume-link--hero" href="/Dwaraknath_Balaji_AI_Engineer_Resume.pdf" download="Dwaraknath_Balaji_AI_Engineer_Resume.pdf">DOWNLOAD RESUME <span aria-hidden="true">↓</span></a>
         <a className="film-brief-anchor" href="#snapshot">SKIP TO THE QUICK BRIEF <ChevronRight size={15} aria-hidden="true"/></a>
+        </div>
       </m.div>
       <m.div className="film-portrait-wrap" style={reduce?undefined:{y:portraitY}}>
         <div className="film-portrait-spotlight" aria-hidden="true"/>
@@ -179,11 +184,20 @@ function Finale() {
 }
 
 export function CinematicStory() {
+  const [theme, setTheme] = useState<Theme>(() => {
+    try { return window.localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark' }
+    catch { return 'dark' }
+  })
+  useEffect(() => {
+    try { window.localStorage.setItem('portfolio-theme', theme) } catch { /* private browsing */ }
+    document.documentElement.style.colorScheme = theme
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f6f3ef' : '#06070a')
+  }, [theme])
   return (
-    <div className="film-app">
+    <div className="film-app" data-theme={theme}>
       <a className="film-skip" href="#universe">Skip introduction</a>
       <ScrollProgress/>
-      <StoryHeader/>
+      <StoryHeader theme={theme} onToggleTheme={() => setTheme(current => current === 'dark' ? 'light' : 'dark')}/>
       <SceneNavigation/>
       <main>
         <Entrance/>
