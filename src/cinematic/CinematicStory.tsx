@@ -76,11 +76,11 @@ function Universe() {
         <h2>WHERE DATA<br/><em>BECOMES</em><br/>DECISIONS<span className="film-accent">.</span></h2>
         <p className="film-universe-summary">{identity.summary}</p>
         <div className="film-skills-board">
-          {skillGroups.map((group,i)=><div key={group.title} className="film-skill-card">
+          {skillGroups.map((group,i)=><m.div key={group.title} className="film-skill-card" initial={reduce?false:{opacity:0,y:24}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.15}} transition={{duration:reduce?0:.65,delay:reduce?0:i*.1,ease}}>
             <span className="film-card-number">SYS / {String(i+1).padStart(2,'0')}</span>
             <h3>{group.title}</h3>
             <p>{group.skills.join(' · ')}</p>
-          </div>)}
+          </m.div>)}
         </div>
         <a className="film-text-link" href="#timeline">FOLLOW THE JOURNEY <ChevronRight size={17}/></a>
       </div>
@@ -111,7 +111,7 @@ function TimeMachine() {
           </div>
         </div>
         <div className="film-timeline-items">
-          {career.filter(item=>(item.years as readonly number[]).includes(year)).map(item=><article key={item.title} className="film-timeline-card"><span>{item.period}</span><div><h3>{item.title}</h3><p className="film-timeline-place">{item.company}</p><p>{item.description}</p></div></article>)}
+          {career.filter(item=>(item.years as readonly number[]).includes(year)).map(item=><m.article key={item.title} className="film-timeline-card" initial={reduce?false:{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:reduce?0:.38}}><span>{item.period}</span><div><h3>{item.title}</h3><p className="film-timeline-place">{item.company}</p><p>{item.description}</p></div></m.article>)}
         </div>
       </div>
     </section>
@@ -152,7 +152,7 @@ function Finale() {
       <div className="film-finale-silhouette" aria-hidden="true"><img src="/hero-portrait-cutout.webp" alt="" loading="lazy" onError={e=>{e.currentTarget.style.display='none'}}/></div>
       <div className="film-scene-content film-finale-content">
         <p className="film-kicker">05 / THE FINALE</p>
-        <p className="film-finale-heading">LET'S BUILD<br/>SOMETHING<br/><em>INTELLIGENT.</em></p>
+        <m.p className="film-finale-heading" initial={{opacity:0,y:55}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.3}} transition={{duration:.95,ease}}>LET'S BUILD<br/>SOMETHING<br/><em>INTELLIGENT.</em></m.p>
         <p className="film-finale-statement">From retrieval to reasoning. From ideas to systems you can trust.</p>
         <div className="film-finale-links">
           <a href={contactLinks.email} aria-label="Send an email to Dwaraknath Balaji"><Mail size={18}/> EMAIL <MoveUpRight size={16}/></a>
