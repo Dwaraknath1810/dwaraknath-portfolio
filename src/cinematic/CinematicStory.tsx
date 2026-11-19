@@ -7,6 +7,7 @@ import { ProjectCard } from './ProjectCard'
 import { ScrollProgress } from './ScrollProgress'
 import { SceneNavigation } from './SceneNavigation'
 import { SceneDivider } from './SceneDivider'
+import { EngineeringWorkbench } from './EngineeringWorkbench'
 import './CinematicStory.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -19,7 +20,7 @@ function StoryHeader() {
       <span className="film-header-label">DWARAKNATH BALAJI <i /> AI SOFTWARE ENGINEER</span>
       <button className="film-menu-button" type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="film-nav">MENU <span>{menu ? '−' : '+'}</span></button>
       <nav id="film-nav" className={menu ? 'film-navigation is-open' : 'film-navigation'} aria-label="Portfolio scenes">
-        {[['intro','Introduction'],['universe','The work'],['timeline','Timeline'],['projects','Projects'],['finale','Contact']].map(([id,label])=><a key={id} onClick={()=>setMenu(false)} href={`#${id}`}>{label}</a>)}
+        {[['intro','Introduction'],['universe','The work'],['timeline','Timeline'],['workbench','Tools & Work'],['projects','Projects'],['finale','Contact']].map(([id,label])=><a key={id} onClick={()=>setMenu(false)} href={`#${id}`}>{label}</a>)}
       </nav>
     </header>
   )
@@ -186,6 +187,7 @@ export function CinematicStory() {
         <Universe/>
         <SceneDivider step={1}/>
         <TimeMachine/>
+        <EngineeringWorkbench/>
         <SceneDivider step={2}/>
         <ProjectUniverse/>
       </main>
