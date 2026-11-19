@@ -44,6 +44,7 @@ function Entrance() {
         <m.p className="film-kicker" initial={reduce?false:{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.8}}>01 / THE OPENING — ENGINEERING INTELLIGENCE</m.p>
         <h1><m.span initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,ease}}>DWARAKNATH</m.span><m.span className="film-title-second" initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,delay:.15,ease}}>BALAJI<span className="film-accent">.</span></m.span></h1>
         <m.p className="film-entrance-subtitle" initial={reduce?false:{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.55}}>AI SOFTWARE ENGINEER <span>—</span> RAG / LLMs / AGENTIC SYSTEMS</m.p>
+        <a className="film-resume-link film-resume-link--hero" href="/Dwaraknath_Balaji_AI_Engineer_Resume.pdf" download="Dwaraknath_Balaji_AI_Engineer_Resume.pdf">DOWNLOAD RESUME <span aria-hidden="true">↓</span></a>
       </m.div>
       <m.div className="film-portrait-wrap" style={reduce?undefined:{y:portraitY}}>
         <div className="film-portrait-spotlight" aria-hidden="true"/>
@@ -159,6 +160,7 @@ function Finale() {
         <div className="film-finale-links">
           <a href={contactLinks.email} aria-label="Send an email to Dwaraknath Balaji"><Mail size={18}/> EMAIL <MoveUpRight size={16}/></a>
           <a href={contactLinks.github} target="_blank" rel="noopener noreferrer"><GitBranch size={18}/> GITHUB <MoveUpRight size={16}/></a>
+          <a href="/Dwaraknath_Balaji_AI_Engineer_Resume.pdf" download="Dwaraknath_Balaji_AI_Engineer_Resume.pdf">RESUME PDF <ArrowDown size={18}/></a>
         </div>
         <div className="film-accolades">
           <span>{credentials.degree}</span>
