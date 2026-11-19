@@ -3,6 +3,7 @@ import { ArrowDown, ChevronRight, GitBranch, Mail, MoveUpRight } from 'lucide-re
 import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
+import { ProjectCard } from './ProjectCard'
 import './CinematicStory.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -125,10 +126,7 @@ function ProjectUniverse() {
         <h2>BUILT TO <em>MATTER.</em></h2>
         <p className="film-project-intro">Selected systems and documented work, from enterprise knowledge retrieval to machine learning applications.</p>
         <div className="film-project-cards">
-          {featuredProjects.map((project,i)=><article key={project.name} className="film-project-card">
-            <div className={`film-project-art film-project-art-${i+1}`} aria-hidden="true"><div className="film-project-glyph">{project.glyph}</div><span>CASE / {String(i+1).padStart(2,'0')}</span></div>
-            <div className="film-project-information"><span>{project.category}</span><h3>{project.name}</h3><p>{project.description}</p><p className="film-project-result">{project.result}</p><div className="film-project-tags">{project.stack.map(s=><span key={s}>{s}</span>)}</div></div>
-          </article>)}
+          {featuredProjects.map((project,i)=><ProjectCard key={project.name} project={project} index={i} />)}
         </div>
       </div>
     </section>
