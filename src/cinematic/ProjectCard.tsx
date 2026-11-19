@@ -63,6 +63,13 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
         <div className="film-project-tags" aria-label="Project technologies">
           {project.stack.map(technology => <span key={technology}>{technology}</span>)}
         </div>
+        <details className="film-project-details">
+          <summary>Explore my approach <span aria-hidden="true">+</span></summary>
+          <div className="film-project-detail-content">
+            <div><h4>HOW IT WORKS</h4><p>{project.notes.approach}</p></div>
+            <div><h4>TESTING & EVIDENCE</h4><p>{project.notes.validation}</p></div>
+          </div>
+        </details>
       </div>
     </m.article>
   )
