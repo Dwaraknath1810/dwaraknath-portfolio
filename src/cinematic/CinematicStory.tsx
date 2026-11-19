@@ -4,6 +4,7 @@ import { m, useReducedMotion, useScroll, useTransform } from 'framer-motion'
 import fallbackPortrait from '../assets/dwaraknath-portrait.jpg'
 import { career, featuredProjects, skillGroups, credentials, identity, contactLinks } from '../data/cinematic'
 import { ProjectCard } from './ProjectCard'
+import { ScrollProgress } from './ScrollProgress'
 import './CinematicStory.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
@@ -164,6 +165,7 @@ export function CinematicStory() {
   return (
     <div className="film-app">
       <a className="film-skip" href="#universe">Skip introduction</a>
+      <ScrollProgress/>
       <StoryHeader/>
       <main>
         <Entrance/>
