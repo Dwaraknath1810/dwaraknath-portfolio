@@ -684,3 +684,201 @@
   .film-project-plot-pair { grid-template-columns: repeat(2,minmax(0,1fr)); }
   .film-project-plot-pair > .film-project-evidence-source { grid-column: 1 / -1; }
 }
+
+
+/* V7 — deliberate mobile composition and user-selected cinematic palette. */
+.film-hero-actions { display:flex; flex-wrap:wrap; align-items:center; gap:12px 22px; margin-top:28px; pointer-events:auto; }
+.film-hero-actions .film-resume-link--hero,
+.film-hero-actions .film-brief-anchor { margin-top:0; }
+.film-theme-toggle {
+  margin-left:auto; display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  min-height:42px; padding:9px 13px; border:1px solid #ffffff6b;
+  border-radius:999px; background:#161722d9; color:#fff;
+  font-size:10px; letter-spacing:.1em; cursor:pointer; position:relative; z-index:30;
+}
+.film-theme-toggle:hover,.film-theme-toggle:focus-visible { border-color:#f2a6a0; outline-offset:3px; }
+.film-header .film-navigation { margin-left:0; }
+.film-menu-button { margin-left:0; }
+@media (max-width:1100px) {
+  .film-header-label { display:none; }
+  .film-theme-toggle { margin-left:auto; }
+}
+@media (max-width:700px) {
+  .film-header { min-height:70px; padding-inline:18px; gap:12px; }
+  .film-theme-toggle { min-height:42px; padding:9px 11px; }
+  .film-theme-toggle span { font-size:9px; }
+  .film-menu-button { min-height:42px; }
+  .film-entrance {
+    min-height:max(790px,100svh);
+    display:block;
+    padding-top:0;
+  }
+  .film-side-label { top:87px; left:20px; right:18px; font-size:8px; }
+  .film-entrance-type {
+    position:relative; z-index:6; width:100%; margin:0;
+    padding:clamp(140px,18svh,180px) 20px 0;
+  }
+  .film-entrance-type h1 {
+    margin-top:21px; font-size:clamp(32px,8.2vw,57px);
+    line-height:1.04; letter-spacing:-.07em;
+  }
+  .film-entrance-type h1 > span { white-space:nowrap; }
+  .film-title-second { margin-left:0; }
+  .film-entrance-subtitle {
+    margin-top:14px; max-width:340px; font-size:clamp(10px,2.65vw,12px);
+    line-height:1.65; letter-spacing:.045em;
+  }
+  .film-hero-actions {
+    display:flex; flex-direction:column; align-items:flex-start;
+    gap:9px; margin-top:18px; max-width:min(100%,300px);
+  }
+  .film-hero-actions .film-resume-link--hero {
+    display:inline-flex; min-height:46px; padding:12px 15px;
+    font-size:10px; gap:15px; background:#1d1b27f2;
+  }
+  .film-hero-actions .film-brief-anchor {
+    display:inline-flex; min-height:38px; padding:8px 0;
+    font-size:9px; line-height:1.4; max-width:100%;
+    background:#0b0b12dd; text-shadow:0 1px 5px #000;
+  }
+  .film-portrait-wrap {
+    z-index:2; inset:auto -8% 0 10%;
+    height:54%; max-height:640px;
+  }
+  .film-portrait { object-position:center bottom; }
+  .film-entrance-bottom {
+    z-index:7; padding:18px 20px max(20px,env(safe-area-inset-bottom));
+    min-height:74px; font-size:8px; gap:12px;
+    background:linear-gradient(0deg,#06070a 30%,#06070ac9 75%,transparent);
+  }
+  .film-entrance-bottom > span:first-child { max-width:55%; line-height:1.6; }
+  .film-entrance-bottom a { white-space:nowrap; gap:8px; }
+}
+@media (max-width:390px) {
+  .film-entrance-type { padding-inline:16px; padding-top:clamp(135px,17svh,165px); }
+  .film-entrance-type h1 { font-size:clamp(28px,8vw,34px); }
+  .film-portrait-wrap { inset:auto -12% 0 4%; height:53%; }
+  .film-hero-actions { max-width:260px; }
+}
+/* Light mode uses a warm editorial palette, preserving all project media and structure. */
+.film-app[data-theme="light"] {
+  --f-ink:#f6f3ef; --f-white:#232331; --f-muted:#625d67; --f-red:#a43740;
+  --f-line:#25202c33; background:#f6f3ef; color:#232331;
+}
+.film-app[data-theme="light"] .film-entrance {
+  background:radial-gradient(ellipse at 70% 50%,#d9d6e7 0%,#f4f0ed 53%,#f9f6f1 95%);
+}
+.film-app[data-theme="light"] .film-entrance::after {
+  background:linear-gradient(transparent,#f6f3efaa 86%,#f6f3ef);
+}
+.film-app[data-theme="light"] .film-grain { opacity:.035; mix-blend-mode:multiply; }
+.film-app[data-theme="light"] .film-portrait { filter:drop-shadow(-24px 15px 35px #25213d45) saturate(.97); }
+.film-app[data-theme="light"] .film-entrance-type h1 { text-shadow:0 5px 25px #54405c1a; }
+.film-app[data-theme="light"] .film-entrance-subtitle,
+.film-app[data-theme="light"] .film-side-label,
+.film-app[data-theme="light"] .film-entrance-bottom,
+.film-app[data-theme="light"] .film-entrance-bottom strong,
+.film-app[data-theme="light"] .film-entrance-bottom a { color:#292536; }
+.film-app[data-theme="light"] .film-entrance-bottom {
+  border-color:#514b5940; background:linear-gradient(0deg,#f6f3ef 20%,#f6f3efdd 75%,transparent);
+}
+.film-app[data-theme="light"] .film-header { border-color:#5b546230; }
+.film-app[data-theme="light"] .film-theme-toggle,
+.film-app[data-theme="light"] .film-menu-button {
+  background:#fffaf6; color:#24202c; border-color:#64596480;
+}
+.film-app[data-theme="light"] .film-navigation {
+  background:#f8f5f2; border-color:#4b41513b;
+}
+.film-app[data-theme="light"] .film-navigation a { color:#302b36; }
+.film-app[data-theme="light"] .film-kicker { color:#8d303b; }
+.film-app[data-theme="light"] .film-resume-link--hero {
+  background:#fffaf5; color:#302430; border-color:#9c545a;
+}
+.film-app[data-theme="light"] .film-brief-anchor {
+  color:#6c2635!important; background:#f8f4eddd; text-shadow:none;
+}
+.film-app[data-theme="light"] .film-brief,
+.film-app[data-theme="light"] .film-universe,
+.film-app[data-theme="light"] .film-time,
+.film-app[data-theme="light"] .film-projects,
+.film-app[data-theme="light"] .film-workbench,
+.film-app[data-theme="light"] .film-finale,
+.film-app[data-theme="light"] .film-scene-divider {
+  background:radial-gradient(ellipse at 80% 15%,#e6dce9,transparent 60%),#f6f3ef;
+  color:#25202b;
+}
+.film-app[data-theme="light"] .film-brief-headline>p,
+.film-app[data-theme="light"] .film-universe-summary,
+.film-app[data-theme="light"] .film-time-head>p,
+.film-app[data-theme="light"] .film-project-intro,
+.film-app[data-theme="light"] .film-workbench-heading>p,
+.film-app[data-theme="light"] .film-finale-statement { color:#514b59; }
+.film-app[data-theme="light"] .film-brief-panel,
+.film-app[data-theme="light"] .film-brief-proof,
+.film-app[data-theme="light"] .film-skill-card,
+.film-app[data-theme="light"] .film-timeline-card,
+.film-app[data-theme="light"] .film-project-card,
+.film-app[data-theme="light"] .film-workbench-feature,
+.film-app[data-theme="light"] .film-workbench-tool,
+.film-app[data-theme="light"] .film-workbench-evidence {
+  background:#fffaf5; border-color:#51465340; color:#282330;
+}
+.film-app[data-theme="light"] .film-brief-panel-title h3,
+.film-app[data-theme="light"] .film-brief-public-head h3,
+.film-app[data-theme="light"] .film-brief-roles li h4,
+.film-app[data-theme="light"] .film-brief-focus-items strong,
+.film-app[data-theme="light"] .film-brief-proof h4,
+.film-app[data-theme="light"] .film-workbench-tool-copy strong,
+.film-app[data-theme="light"] .film-workbench-feature h3,
+.film-app[data-theme="light"] .film-workbench-metric strong,
+.film-app[data-theme="light"] .film-workbench-toolhead h3 { color:#25202b; }
+.film-app[data-theme="light"] .film-brief-roles li p,
+.film-app[data-theme="light"] .film-brief-focus-items span,
+.film-app[data-theme="light"] .film-brief-proof p,
+.film-app[data-theme="light"] .film-brief-proof>strong,
+.film-app[data-theme="light"] .film-brief-evidence-note,
+.film-app[data-theme="light"] .film-brief-public-head>p,
+.film-app[data-theme="light"] .film-skill-card p,
+.film-app[data-theme="light"] .film-workbench-description,
+.film-app[data-theme="light"] .film-workbench-usecase>p,
+.film-app[data-theme="light"] .film-workbench-disclosure,
+.film-app[data-theme="light"] .film-workbench-tool-copy small,
+.film-app[data-theme="light"] .film-workbench-process-intro>p,
+.film-app[data-theme="light"] .film-workbench-pipeline li p,
+.film-app[data-theme="light"] .film-workbench-evidence-note { color:#554b5b; }
+.film-app[data-theme="light"] .film-brief-roles li,
+.film-app[data-theme="light"] .film-brief-focus-items>div,
+.film-app[data-theme="light"] .film-workbench-usecase,
+.film-app[data-theme="light"] .film-workbench-pipeline li,
+.film-app[data-theme="light"] .film-workbench-metric { border-color:#50435233; }
+.film-app[data-theme="light"] .film-brief-actions>a,
+.film-app[data-theme="light"] .film-project-filters button,
+.film-app[data-theme="light"] .film-project-source,
+.film-app[data-theme="light"] .film-finale-links a { color:#2d2430!important; background:#fffaf5; border-color:#99565d; }
+.film-app[data-theme="light"] .film-brief-actions>a:first-child,
+.film-app[data-theme="light"] .film-project-filters button.is-active { color:#fff!important; background:#943d48; }
+.film-app[data-theme="light"] .film-brief-proof>a,
+.film-app[data-theme="light"] .film-text-link { color:#7e303d; }
+.film-app[data-theme="light"] .film-scene-divider-center,
+.film-app[data-theme="light"] .film-timeline-place,
+.film-app[data-theme="light"] .film-project-information>p,
+.film-app[data-theme="light"] .film-project-information>span,
+.film-app[data-theme="light"] .film-project-detail-content,
+.film-app[data-theme="light"] .film-workbench-toolhead>p,
+.film-app[data-theme="light"] .film-workbench-metric>span { color:#554b59; }
+.film-app[data-theme="light"] .film-project-information,
+.film-app[data-theme="light"] .film-project-details,
+.film-app[data-theme="light"] .film-workbench-process,
+.film-app[data-theme="light"] .film-finale-content { color:#27222d; }
+.film-app[data-theme="light"] .film-project-evidence-source,
+.film-app[data-theme="light"] .film-project-diagram figcaption,
+.film-app[data-theme="light"] .film-project-evidence-image figcaption { color:#514758; }
+.film-app[data-theme="light"] .film-project-evidence-image { background:#f4f0eb; border-color:#64515d55; }
+.film-app[data-theme="light"] .film-scene-navigation { background:#fffaf5e8; border-color:#51465344; }
+.film-app[data-theme="light"] .film-scene-dot { border-color:#6c4b5b; }
+.film-app[data-theme="light"] .film-finale-foot,
+.film-app[data-theme="light"] .film-accolades { color:#504653; }
+@media (max-width:700px) {
+  .film-app[data-theme="light"] .film-hero-actions .film-brief-anchor { background:#fffaf5eb; }
+}
