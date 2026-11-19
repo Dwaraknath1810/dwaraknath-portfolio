@@ -1,5 +1,5 @@
 import { m, useReducedMotion } from 'framer-motion'
-import { ArrowUpRight, CheckCircle2, CircuitBoard, FlaskConical, Layers3, Sparkles } from 'lucide-react'
+import { ArrowUpRight, CheckCircle2, CircuitBoard, FlaskConical, Layers3 } from 'lucide-react'
 import { engineeringPipeline, engineeringTools, evidenceHighlights, featuredAIWorkspaces } from '../data/cinematic'
 import './EngineeringWorkbench.css'
 
@@ -25,7 +25,7 @@ export function EngineeringWorkbench() {
               transition={{duration:reduced?0:.65,delay:i*.12}}
             >
               <div className="film-workbench-feature-top">
-                <div className="film-workbench-brand" aria-hidden="true">{tool.id==='chatgpt-work'?<Sparkles size={29} strokeWidth={1.4}/>:<span className="film-workbench-claude-icon">✳</span>}</div>
+                <div className="film-workbench-brand" aria-hidden="true">{tool.id==='chatgpt-work'?<img className="film-workbench-openai-logo" src="/openai-blossom.svg" width="36" height="36" alt="" />:<span className="film-workbench-claude-icon">✳</span>}</div>
                 <span>{tool.provider} <ArrowUpRight size={14} aria-hidden="true"/></span>
               </div>
               <h3>{tool.name}</h3>

@@ -100,3 +100,19 @@
 .film-project-detail-content p{font-size:13px;line-height:1.75;color:#c2bed0;margin-top:10px}
 .film-project-details summary:focus-visible{outline:2px solid #ffe1de;outline-offset:3px}
 @media (prefers-reduced-motion:reduce){.film-project-details summary span{transition:none}}
+
+
+/* OpenAI Blossom on the ChatGPT Work card. The locally hosted SVG
+   is a recognizable brand identifier, not a generic sparkle. */
+.film-workbench-openai-logo {
+  display: block;
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  filter: invert(1);
+}
+.film-workbench-feature-1 .film-workbench-brand {
+  background: #12372f;
+  border-color: #9bc8b788;
+  box-shadow: 0 14px 38px #051a1770;
+}
