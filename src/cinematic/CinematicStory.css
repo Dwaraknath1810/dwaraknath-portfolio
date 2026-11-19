@@ -280,3 +280,92 @@
   .film-project-information h3 { overflow-wrap: anywhere; }
   .film-timeline-card p { font-size: 13px; }
 }
+
+
+/* V3.1 cinematic polish: depth without heavy WebGL or video dependencies. */
+.film-reading-progress {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 3px;
+  pointer-events: none;
+}
+.film-reading-progress-bar {
+  width: 100%;
+  height: 100%;
+  transform-origin: 0 50%;
+  background: linear-gradient(90deg, #e33d38, #ee8d76 65%, #f1cec1);
+  box-shadow: 0 0 14px rgba(227,61,56,.5);
+}
+.film-project-card--interactive {
+  transform-style: preserve-3d;
+  isolation: isolate;
+  will-change: transform;
+  box-shadow: 0 20px 65px rgba(0,0,0,.22);
+}
+.film-project-card--interactive .film-project-art {
+  transform: translateZ(12px);
+}
+.film-project-card--interactive .film-project-information {
+  position: relative;
+  transform: translateZ(5px);
+}
+.film-project-glare {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  mix-blend-mode: screen;
+  opacity: .58;
+}
+.film-project-orb {
+  position: absolute;
+  z-index: 0;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 1px solid rgba(217, 232, 255, .35);
+  box-shadow: 0 0 45px rgba(118,161,245,.15);
+  pointer-events: none;
+}
+.film-project-orb--outer {
+  width: min(70%, 360px);
+  transform: rotateX(56deg) rotateZ(-32deg);
+}
+.film-project-orb--inner {
+  width: min(52%, 245px);
+  transform: rotateY(60deg) rotateZ(25deg);
+  border-color: rgba(240, 175, 215, .42);
+}
+.film-project-card--interactive .film-project-glyph {
+  transform: perspective(550px) rotateY(-12deg) translateZ(20px);
+  text-shadow: 0 0 45px rgba(206,223,255,.35);
+}
+.film-project-card--interactive:hover .film-project-orb--outer {
+  border-color: rgba(227,224,255,.7);
+}
+.film-project-card--interactive .film-project-information > p {
+  max-width: 58ch;
+}
+@media (hover: none), (pointer: coarse) {
+  .film-project-card--interactive { will-change: auto; }
+  .film-project-glare { display: none; }
+  .film-project-card--interactive .film-project-art,
+  .film-project-card--interactive .film-project-information { transform: none; }
+}
+@media (max-width: 700px) {
+  .film-reading-progress { height: 2px; }
+  .film-project-orb--outer { width: 78%; }
+  .film-project-card--interactive .film-project-glyph {
+    transform: none;
+    font-size: clamp(76px, 22vw, 132px);
+  }
+  .film-project-card--interactive .film-project-art { min-height: 205px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .film-project-card--interactive { will-change: auto; }
+  .film-project-card--interactive,
+  .film-project-card--interactive:hover,
+  .film-project-card--interactive .film-project-glyph { transition: none; transform: none; }
+}
