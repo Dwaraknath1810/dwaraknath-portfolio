@@ -53,6 +53,7 @@ export const featuredProjects = [
     result:'ZaraLM work described in professional experience.',
     stack:['Python','Qdrant','Elasticsearch','RAG','LLM Evaluation'],
     glyph:'RAG',
+    notes: { approach:'Document ingestion and chunking; embedding-based retrieval with Qdrant and Elasticsearch; grounded answer generation.', validation:'Evaluated retrieval relevance, response correctness, source grounding and citations across varied document formats.' },
   },
   {
     name:'AGENTIC WORKFLOWS & LLM RELIABILITY',
@@ -61,6 +62,7 @@ export const featuredProjects = [
     result:'Focus: dependable, traceable AI behavior.',
     stack:['LangChain','LangGraph','Claude','LangSmith','Pytest'],
     glyph:'AI',
+    notes: { approach:'Orchestrated multi-step reasoning and tool workflows with LangChain, LangGraph and Claude workflows.', validation:'Used benchmark test cases to review hallucinations, factual accuracy, faithfulness and response quality.' },
   },
   {
     name:'DRIVER DROWSINESS DETECTION',
@@ -69,6 +71,7 @@ export const featuredProjects = [
     result:'92% classification accuracy (resume-reported).',
     stack:['Python','TensorFlow','Keras','OpenCV'],
     glyph:'92%',
+    notes: { approach:'CNN-based closed-eye classification with image processing in OpenCV.', validation:'92% classification accuracy reported in the resume; evaluation dataset details are not published.' },
   },
   {
     name:'SENTIMENT ANALYSIS SYSTEM',
@@ -77,6 +80,7 @@ export const featuredProjects = [
     result:'88% F1-score (resume-reported).',
     stack:['Python','Scikit-learn','Pandas','SVM'],
     glyph:'88%',
+    notes: { approach:'Text preprocessing, targeted under-sampling and comparison of SVM, logistic regression and Naive Bayes.', validation:'88% F1-score reported in the resume for the imbalanced classification task.' },
   },
 ] as const
 
@@ -93,3 +97,51 @@ export const contactLinks = {
   email:'mailto:dwaraknath.balaji@gmail.com',
   github:'https://github.com/Dwaraknath1810',
 } as const
+
+/** "Work" and "Cowork" modes are shown as areas of exploration, rather
+ * than falsely claiming undocumented production deployments. */
+export const featuredAIWorkspaces = [
+  {
+    id: 'chatgpt-work',
+    glyph: 'GPT',
+    name: 'ChatGPT Work',
+    provider: 'OPENAI',
+    category: 'AGENTIC WORKSPACE · EXPLORATION',
+    description: 'Research, planning and multi-step project workflows with AI assistance.',
+    useCase: 'Potential use: structure technical research, draft implementation plans and review project artifacts.',
+  },
+  {
+    id: 'claude-cowork',
+    glyph: 'C',
+    name: 'Claude / Cowork',
+    provider: 'ANTHROPIC',
+    category: 'AI WORKFLOWS · EXPLORATION',
+    description: 'Context-rich analysis and task workflows through Claude’s work capabilities.',
+    useCase: 'Potential use: reason through specifications, organize documents and coordinate multi-step work.',
+  },
+] as const
+
+/** Tools and engineering systems explicitly mentioned in the supplied resume. */
+export const engineeringTools = [
+  { short:'LG', name:'LangGraph', category:'Agent orchestration' },
+  { short:'LC', name:'LangChain', category:'LLM application flows' },
+  { short:'LS', name:'LangSmith', category:'LLM observability' },
+  { short:'QD', name:'Qdrant', category:'Vector retrieval' },
+  { short:'AZ', name:'Azure OpenAI', category:'Model platform' },
+  { short:'BR', name:'AWS Bedrock', category:'Model platform' },
+  { short:'PY', name:'Python / FastAPI', category:'Backend systems' },
+  { short:'DK', name:'Docker', category:'Environments' },
+] as const
+
+export const engineeringPipeline = [
+  { number:'01', name:'INGEST', text:'Process documents and structured inputs; prepare them for retrieval.' },
+  { number:'02', name:'RETRIEVE', text:'Use embeddings, vector search and context ranking to identify relevant evidence.' },
+  { number:'03', name:'REASON', text:'Supply retrieved context to language models and structured agent workflows.' },
+  { number:'04', name:'EVALUATE', text:'Check groundedness, citation accuracy, hallucinations and response reliability.' },
+] as const
+
+export const evidenceHighlights = [
+  { value:'92%', label:'Closed-eye classification accuracy', note:'Driver drowsiness project' },
+  { value:'88%', label:'F1-score on imbalanced text data', note:'Sentiment analysis project' },
+  { value:'8.65', label:'CGPA out of 10', note:'B.Tech AI & Data Science' },
+] as const
