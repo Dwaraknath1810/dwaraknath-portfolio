@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 
 const chapters = [
   { id: 'intro', label: 'The Opening', number: '01' },
+  { id: 'snapshot', label: 'Recruiter Quick Brief', number: '01A' },
   { id: 'universe', label: 'Intelligence Universe', number: '02' },
   { id: 'timeline', label: 'Time Machine', number: '03' },
   { id: 'workbench', label: 'AI Workbench', number: '03A' },
