@@ -1,4 +1,4 @@
-/** Portfolio narrative grounded in Dwaraknath_Balaji_AI_Engineer_Resume(2).pdf.
+/** Portfolio narrative grounded in Dwaraknath_Balaji_AI_Engineer_Resume(3).pdf.
  * Public-facing descriptions avoid claims of confidential deliverables or source releases.
  */
 export const identity = {
@@ -34,7 +34,7 @@ export const career = [
     period:'JUL 2025 – PRESENT',
     title:'AI Software Engineer',
     company:'Phoenix ICT Solutions Pty Ltd',
-    description:'Enterprise ZaraLM RAG pipelines, semantic search with Qdrant and Elasticsearch, ingestion across multiple formats, agentic AI workflows, LLM evaluation and UAT.',
+    description:'Enterprise RAG pipelines for AI document intelligence, semantic search with Qdrant and Elasticsearch, ingestion across multiple formats, agentic AI workflows, LLM evaluation and UAT.',
   },
   {
     years:[2024],
@@ -50,9 +50,13 @@ export const featuredProjects = [
     name:'ENTERPRISE RAG & DOCUMENT INTELLIGENCE',
     category:'PROFESSIONAL EXPERIENCE · PHOENIX ICT SOLUTIONS',
     description:'Enterprise knowledge systems using document ingestion, embeddings, semantic search, context retrieval, LLM generation and evidence-grounded evaluation.',
-    result:'ZaraLM work described in professional experience.',
+    result:'Enterprise AI platform work described in professional experience.',
     stack:['Python','Qdrant','Elasticsearch','RAG','LLM Evaluation'],
     glyph:'RAG',
+    sourceUrl:null,
+    diagram:'/projects/enterprise-rag-flow.svg',
+    screenshot:null,
+    evidenceType:'Illustrative workflow; proprietary implementation details omitted',
     notes: { approach:'Document ingestion and chunking; embedding-based retrieval with Qdrant and Elasticsearch; grounded answer generation.', validation:'Evaluated retrieval relevance, response correctness, source grounding and citations across varied document formats.' },
   },
   {
@@ -62,6 +66,10 @@ export const featuredProjects = [
     result:'Focus: dependable, traceable AI behavior.',
     stack:['LangChain','LangGraph','Claude','LangSmith','Pytest'],
     glyph:'AI',
+    sourceUrl:null,
+    diagram:'/projects/agentic-evaluation-flow.svg',
+    screenshot:null,
+    evidenceType:'Illustrative workflow; proprietary implementation details omitted',
     notes: { approach:'Orchestrated multi-step reasoning and tool workflows with LangChain, LangGraph and Claude workflows.', validation:'Used benchmark test cases to review hallucinations, factual accuracy, faithfulness and response quality.' },
   },
   {
@@ -71,6 +79,10 @@ export const featuredProjects = [
     result:'92% classification accuracy (resume-reported).',
     stack:['Python','TensorFlow','Keras','OpenCV'],
     glyph:'92%',
+    sourceUrl:'https://github.com/Dwaraknath1810/Driver-drowsiness-detection',
+    diagram:'/projects/driver-drowsiness-flow.svg',
+    screenshot:'/projects/driver-drowsiness-training-accuracy.png',
+    evidenceType:'Original training chart from linked public Jupyter notebook',
     notes: { approach:'CNN-based closed-eye classification with image processing in OpenCV.', validation:'92% classification accuracy reported in the resume; evaluation dataset details are not published.' },
   },
   {
@@ -80,6 +92,10 @@ export const featuredProjects = [
     result:'88% F1-score (resume-reported).',
     stack:['Python','Scikit-learn','Pandas','SVM'],
     glyph:'88%',
+    sourceUrl:'https://github.com/Dwaraknath1810/Sentimental-analysis',
+    diagram:'/projects/sentiment-classification-flow.svg',
+    screenshot:null,
+    evidenceType:'Source notebook linked; no public screenshot available',
     notes: { approach:'Text preprocessing, targeted under-sampling and comparison of SVM, logistic regression and Naive Bayes.', validation:'88% F1-score reported in the resume for the imbalanced classification task.' },
   },
 ] as const
