@@ -145,6 +145,7 @@ function ProjectUniverse() {
 }
 
 function Finale() {
+  const reduce = useReducedMotion()
   return (
     <footer id="finale" className="film-scene film-finale">
       <div className="film-finale-aura" aria-hidden="true"/>
@@ -152,7 +153,7 @@ function Finale() {
       <div className="film-finale-silhouette" aria-hidden="true"><img src="/hero-portrait-cutout.webp" alt="" loading="lazy" onError={e=>{e.currentTarget.style.display='none'}}/></div>
       <div className="film-scene-content film-finale-content">
         <p className="film-kicker">05 / THE FINALE</p>
-        <m.p className="film-finale-heading" initial={{opacity:0,y:55}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.3}} transition={{duration:.95,ease}}>LET'S BUILD<br/>SOMETHING<br/><em>INTELLIGENT.</em></m.p>
+        <m.p className="film-finale-heading" initial={reduce?false:{opacity:0,y:55}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.3}} transition={{duration:reduce?0:.95,ease}}>LET'S BUILD<br/>SOMETHING<br/><em>INTELLIGENT.</em></m.p>
         <p className="film-finale-statement">From retrieval to reasoning. From ideas to systems you can trust.</p>
         <div className="film-finale-links">
           <a href={contactLinks.email} aria-label="Send an email to Dwaraknath Balaji"><Mail size={18}/> EMAIL <MoveUpRight size={16}/></a>
