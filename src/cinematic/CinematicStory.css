@@ -580,3 +580,10 @@
   .film-scene-dot,
   .film-project-filters button { transition: none; }
 }
+
+
+/* On small touch screens the header menu replaces the scene rail,
+   preventing floating dots from covering content and controls. */
+@media (max-width: 700px) {
+  .film-scene-navigation { display: none; }
+}
