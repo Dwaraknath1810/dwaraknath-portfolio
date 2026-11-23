@@ -54,6 +54,7 @@ export function RecruiterOverview() {
               <div><strong>Agentic AI</strong><span>LangChain, LangGraph, multi-step workflows</span></div>
               <div><strong>LLM evaluation</strong><span>Correctness, source grounding, hallucination and citations</span></div>
               <div><strong>Backend & cloud</strong><span>Python, FastAPI, AWS, Azure and Docker</span></div>
+              <div><strong>Applied AI delivery</strong><span>Backend integration, access controls, UAT, load testing and resolving retrieval issues</span></div>
             </div>
           </article>
         </div>
