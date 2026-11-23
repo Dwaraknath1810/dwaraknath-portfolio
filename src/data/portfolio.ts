@@ -170,7 +170,7 @@ export const projects: readonly Project[] = [
 export const experience: readonly ExperienceEntry[] = [
   {
     company: 'PHOENIX ICT SOLUTIONS',
-    roles: ['AI / ML Engineer'],
+    roles: ['AI Engineer'],
     focus: [
       'AI engineering',
       'RAG',
@@ -182,7 +182,7 @@ export const experience: readonly ExperienceEntry[] = [
   },
   {
     company: 'ZSCALER',
-    roles: ['QA Engineer Intern', 'Associate SDE — Platform Engineering'],
+    roles: ['Software Development Intern', 'Software Development Engineer'],
     focus: [
       'RAG dataset creation',
       'OAuth / RBAC repository visibility',
