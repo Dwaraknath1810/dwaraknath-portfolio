@@ -1,14 +1,14 @@
-/** Portfolio narrative grounded in Dwaraknath_Balaji_AI_Engineer_Resume(3).pdf.
+/** Portfolio narrative grounded in the current published AI Engineer resume PDF.
  * Public-facing descriptions avoid claims of confidential deliverables or source releases.
  */
 export const identity = {
   name: 'Dwaraknath Balaji',
-  title: 'AI Software Engineer',
-  summary: 'I design and evaluate enterprise RAG and LLM applications—from semantic retrieval and knowledge-base ingestion to agentic workflows, grounded responses and reliable AI evaluation.',
+  title: 'AI Engineer',
+  summary: 'I build and evaluate enterprise RAG pipelines and agentic workflows for document-grounded question answering, with Python, embeddings, Qdrant and Elasticsearch. I test retrieval relevance, citation accuracy, answer groundedness and bulk ingestion reliability.',
 } as const
 
 export const skillGroups = [
-  {title:'GENERATIVE INTELLIGENCE', skills:['RAG','LLMs','Agentic AI','LangChain','LangGraph','LangSmith','Claude workflows','Claude','ChatGPT','AWS Bedrock','Azure OpenAI GPT-4o','MCP']},
+  {title:'GENERATIVE INTELLIGENCE', skills:['RAG','LLMs','Agentic AI','LangChain','LangGraph','LangSmith','Claude workflows','Claude','ChatGPT','AWS Bedrock','Azure OpenAI GPT-4o']},
   {title:'RETRIEVAL & DATA', skills:['Qdrant','FAISS','Elasticsearch','PostgreSQL','Knowledge-base ingestion','Document processing','Semantic Search','Pandas','NumPy']},
   {title:'ENGINEERING & CLOUD', skills:['Python','FastAPI','REST APIs','OAuth 2.0','RBAC','AWS','Azure','Docker','Jenkins CI/CD','Git','GitHub']},
   {title:'EVALUATION & ML', skills:['RAG benchmarking','Groundedness','Hallucination testing','Citation accuracy','Pytest','Locust','TensorFlow','Keras','Scikit-learn','OpenCV']},
@@ -32,9 +32,9 @@ export const career = [
   {
     years:[2025,2026],
     period:'JUL 2025 – PRESENT',
-    title:'AI Software Engineer',
+    title:'AI Engineer',
     company:'Phoenix ICT Solutions Pty Ltd',
-    description:'Enterprise RAG pipelines for AI document intelligence, semantic search with Qdrant and Elasticsearch, ingestion across multiple formats, agentic AI workflows, LLM evaluation and UAT.',
+    description:'Built enterprise RAG and multi-step agentic workflows; implemented semantic search using Qdrant and Elasticsearch; evaluated answer grounding, citations and retrieval quality; validated ingestion, UAT and access controls.',
   },
   {
     years:[2024],
