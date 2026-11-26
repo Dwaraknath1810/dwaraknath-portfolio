@@ -61,6 +61,7 @@ export type PortfolioProject = {
   glyph: string
   art: string
   sourceUrl: string | null
+  restrictedSourceUrl?: string
   diagram: string
   screenshot: string | null
   evidenceType: string
@@ -77,7 +78,7 @@ export const featuredProjects: readonly PortfolioProject[] = [
     description:'A full-stack research workspace that coordinates specialised agents and preserves evidence references from research tasks to structured reports.',
     result:'Locally developed · Offline tested · Private repository',
     stack:['Python','OpenAI Agents SDK','Pydantic','FastAPI','React','TypeScript','PostgreSQL','Qdrant','SSE','Docker Compose','Pytest'],
-    glyph:'5 AGENTS', sourceUrl:null, diagram:'/projects/agent-intelligence.svg', screenshot:null,
+    glyph:'5 AGENTS', sourceUrl:null, restrictedSourceUrl:'https://github.com/Dwaraknath1810/multi-agent-ai', diagram:'/projects/agent-intelligence.svg', screenshot:null,
     evidenceType:'Original architecture illustration based on the resume and reviewed implementation; not an application screenshot.',
     notes:{approach:'A FastAPI backend coordinates five structured-output agent roles. The supervisor delegates bounded parallel research tasks; analysis, verification and writing proceed in sequence. Evidence and execution events are persisted for traceability, with Qdrant retrieval and replayable server-sent events.',validation:'Repository documentation records offline SDK Runner and workflow tests, local fixture-embedding retrieval, and local service checks. Live OpenAI API execution and paid embeddings were not verified.'},
     architecture:['React / TypeScript workspace → FastAPI backend','Supervisor → parallel research tasks (Qdrant document evidence)','Analysis compares evidence; verification checks support and may request bounded corrections','Writer produces the structured report with source references','PostgreSQL persists jobs, evidence and events; SSE replays activity to the interface'],
@@ -91,7 +92,7 @@ export const featuredProjects: readonly PortfolioProject[] = [
     description:'A local-first macOS assistant that coordinates conversational requests, tool calls, persistent memory and controlled desktop actions.',
     result:'Local implementation · Browser and mock-provider tested · Private repository',
     stack:['Python','LangGraph','FastAPI','React','TypeScript','SQLite','Ollama','OpenAI','WebSockets','Playwright'],
-    glyph:'JARVIS',sourceUrl:null,diagram:'/projects/jarvis.svg',screenshot:null,
+    glyph:'JARVIS',sourceUrl:null,restrictedSourceUrl:'https://github.com/Dwaraknath1810/jarvis',diagram:'/projects/jarvis.svg',screenshot:null,
     evidenceType:'Original architecture illustration based on the resume and reviewed implementation; not an application screenshot.',
     notes:{approach:'A rule-based router selects typed tool jobs coordinated by LangGraph. Independent reads can run in parallel; sensitive file and application actions pass a code-enforced, single-use approval gate before execution. SQLite stores conversations, tasks and memory; WebSocket events stream progress and results.',validation:'The resume records Chromium Playwright tests of persistence, approval handling and cancellation, local WebSocket event exercises and mocked provider responses. The repository documents streaming adapters and restricted tool policies; live provider inference is not independently verified.'},
     architecture:['React / TypeScript command centre ↔ FastAPI (HTTP and WebSocket events)','Rule-based routing → LangGraph plan, execution and review','Read-only operations may run concurrently; sensitive actions require explicit single-use approval before execution','Typed workspace and macOS tools return results through the review stage','SQLite stores conversations, tasks and memory; Ollama / OpenAI adapters support streaming'],

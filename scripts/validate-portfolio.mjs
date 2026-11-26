@@ -47,7 +47,8 @@ assert(story.includes('Dwaraknath_Balaji_AI_Engineer_Resume.pdf'), 'Resume CTA i
 assert(project.includes('project.diagram'), 'Case-study architecture visual is missing')
 assert(portfolio.includes("slug:'agent-intelligence', kind:'personal'") && portfolio.includes("slug:'jarvis',kind:'personal'"), 'Flagship projects missing')
 assert(story.includes('project.kind===filter'), 'Project filtering must use explicit categories')
-assert(!/github\.com\/Dwaraknath1810\/(?:multi-agent-ai|jarvis)\b/i.test(portfolio), 'Private source links must not be published')
+assert(portfolio.includes("sourceUrl:null, restrictedSourceUrl:'https://github.com/Dwaraknath1810/multi-agent-ai'") && portfolio.includes("sourceUrl:null,restrictedSourceUrl:'https://github.com/Dwaraknath1810/jarvis'"), 'Private projects must use restricted source links, not public source links')
+assert(project.includes('GITHUB ACCESS REQUIRED'), 'Private repository access must be disclosed')
 
 for (const name of ['src/cinematic/CinematicStory.tsx','src/cinematic/RecruiterOverview.tsx','src/cinematic/ProjectCard.tsx','src/data/cinematic.ts','index.html']) {
   assert(!/zara\s*[-_]?\s*(?:lm|chat)/i.test(read(name)), `Private platform name leaked into ${name}`)
