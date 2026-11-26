@@ -10,6 +10,8 @@ import { SceneDivider } from './SceneDivider'
 import { EngineeringWorkbench } from './EngineeringWorkbench'
 import { RecruiterOverview } from './RecruiterOverview'
 import './CinematicStory.css'
+import { useCardProximity } from './useCardProximity'
+import './CardProximity.css'
 
 const ease = [0.22, 1, 0.36, 1] as const
 
@@ -188,6 +190,8 @@ function Finale() {
 }
 
 export function CinematicStory() {
+  const root = useRef<HTMLDivElement>(null)
+  useCardProximity(root)
   const [theme, setTheme] = useState<Theme>(() => {
     try { return window.localStorage.getItem('portfolio-theme') === 'light' ? 'light' : 'dark' }
     catch { return 'dark' }
@@ -198,7 +202,7 @@ export function CinematicStory() {
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', theme === 'light' ? '#f6f3ef' : '#06070a')
   }, [theme])
   return (
-    <div className="film-app" data-theme={theme}>
+    <div ref={root} className="film-app" data-theme={theme}>
       <a className="film-skip" href="#universe">Skip introduction</a>
       <ScrollProgress/>
       <StoryHeader theme={theme} onToggleTheme={() => setTheme(current => current === 'dark' ? 'light' : 'dark')}/>

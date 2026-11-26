@@ -1,0 +1,39 @@
+/* Cursor-responsive finishing layer. No changes to card dimensions or content. */
+@media (any-hover: hover) and (any-pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .film-app {
+    --card-hover-edge: #f1a0a5a6;
+    --card-hover-glow: #f299a22a;
+    --card-hover-shadow: #09071150;
+  }
+  .film-app[data-theme="light"] {
+    --card-hover-edge: #a4374080;
+    --card-hover-glow: #a4374012;
+    --card-hover-shadow: #65506120;
+  }
+  .film-app :is(.film-skill-card,.film-timeline-card,.film-project-card,.film-brief-panel,.film-brief-proof,.film-workbench-feature,.film-workbench-tool,.film-workbench-evidence,.film-workbench-metric) {
+    position: relative;
+    transition: border-color .3s ease, background .3s ease, transform .35s ease, translate .28s cubic-bezier(.2,.7,.2,1), box-shadow .28s ease;
+  }
+  .film-app :is(.film-skill-card,.film-timeline-card,.film-project-card,.film-brief-panel,.film-brief-proof,.film-workbench-feature,.film-workbench-tool,.film-workbench-evidence,.film-workbench-metric)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(ellipse 240px 190px at var(--card-pointer-x,50%) var(--card-pointer-y,50%),var(--card-hover-glow),transparent 100%);
+    box-shadow: inset 0 0 0 1px var(--card-hover-edge);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s ease;
+    z-index: 4;
+  }
+  .film-app [data-proximity="true"] {
+    box-shadow: 0 12px 32px var(--card-hover-shadow), 0 0 20px var(--card-hover-glow);
+  }
+  /* Independent translate preserves Framer Motion's existing transform and project tilt. */
+  .film-app [data-proximity="true"]:not(.film-project-card,.film-workbench-evidence) {
+    translate: 0 -3px;
+  }
+  .film-app [data-proximity="true"]::after { opacity: 1; }
+  .film-app [data-proximity="true"]:is(.film-skill-card,.film-workbench-feature,.film-workbench-tool):hover { translate: 0; }
+  .film-app :is(.film-project-card,.film-brief-proof):focus-within::after { opacity: 1; }
+}
