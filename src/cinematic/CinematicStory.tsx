@@ -47,10 +47,13 @@ function Entrance() {
       <m.div className="film-entrance-type" style={reduce?undefined:{y:textY,opacity}}>
         <m.p className="film-kicker" initial={reduce?false:{opacity:0,y:18}} animate={{opacity:1,y:0}} transition={{duration:.8}}>01 / THE OPENING — ENGINEERING INTELLIGENCE</m.p>
         <h1><m.span initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,ease}}>DWARAKNATH</m.span><m.span className="film-title-second" initial={reduce?false:{y:'115%'}} animate={{y:0}} transition={{duration:1.2,delay:.15,ease}}>BALAJI<span className="film-accent">.</span></m.span></h1>
-        <m.p className="film-entrance-subtitle" initial={reduce?false:{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.55}}>AI ENGINEER <span>—</span> RAG / LLMs / AGENTIC SYSTEMS</m.p>
+        <m.p className="film-entrance-subtitle" initial={reduce?false:{opacity:0,y:15}} animate={{opacity:1,y:0}} transition={{duration:.9,delay:.55}}>AI ENGINEER <span>—</span> RAG / MULTI-AGENT SYSTEMS</m.p>
+        <p className="film-hero-description">Enterprise AI, full-stack agentic applications and evidence-based evaluation.</p>
         <div className="film-hero-actions">
         <a className="film-resume-link film-resume-link--hero" href="/Dwaraknath_Balaji_AI_Engineer_Resume.pdf" download="Dwaraknath_Balaji_AI_Engineer_Resume.pdf">DOWNLOAD RESUME <span aria-hidden="true">↓</span></a>
         <a className="film-brief-anchor" href="#snapshot">SKIP TO THE QUICK BRIEF <ChevronRight size={15} aria-hidden="true"/></a>
+        <a className="film-brief-anchor" href="#projects">EXPLORE MY WORK <ChevronRight size={15} aria-hidden="true"/></a>
+        <a className="film-brief-anchor" href="#finale">CONTACT <ChevronRight size={15} aria-hidden="true"/></a>
         </div>
       </m.div>
       <m.div className="film-portrait-wrap" style={reduce?undefined:{y:portraitY}}>
@@ -132,8 +135,8 @@ function ProjectUniverse() {
   const ref=useRef<HTMLElement>(null)
   const {scrollYProgress}=useScroll({target:ref,offset:['start end','end start']})
   const shift=useTransform(scrollYProgress,[0,1],[-60,45])
-  const [filter,setFilter]=useState<'all' | 'professional' | 'personal'>('all')
-  const visibleProjects=featuredProjects.map((project,index)=>({project,index})).filter(({index})=>filter==='all' || (filter==='professional' ? index<2 : index>=2))
+  const [filter,setFilter]=useState<'all' | 'professional' | 'personal' | 'ml'>('all')
+  const visibleProjects=featuredProjects.map((project,index)=>({project,index})).filter(({project})=>filter==='all' || project.kind===filter)
   return (
     <section id="projects" className="film-scene film-projects" ref={ref}>
       <div className="film-project-grid" aria-hidden="true"/>
@@ -141,11 +144,12 @@ function ProjectUniverse() {
       <div className="film-scene-content">
         <p className="film-kicker">04 / PROJECT UNIVERSE</p>
         <h2>BUILT TO <em>MATTER.</em></h2>
-        <p className="film-project-intro">Selected systems and documented work, from enterprise knowledge retrieval to machine learning applications.</p>
+        <p className="film-project-intro">Two flagship personal AI applications, enterprise engineering case studies and machine learning projects. Each case study distinguishes implementation, testing and source availability.</p>
         <div className="film-project-filters" role="group" aria-label="Filter projects">
-          {([["all","All projects"],["professional","Professional work"],["personal","ML projects"]] as const).map(([value,label])=><button key={value} type="button" className={filter===value?"is-active":""} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{label}<span aria-hidden="true">↗</span></button>)}
+          {([["all","All projects"],["personal","Personal AI"],["professional","Professional work"],["ml","ML projects"]] as const).map(([value,label])=><button key={value} type="button" className={filter===value?"is-active":""} aria-pressed={filter===value} onClick={()=>setFilter(value)}>{label}<span aria-hidden="true">↗</span></button>)}
         </div>
-        <div className="film-project-cards" aria-live="polite">
+        <p className="film-project-count" role="status">{visibleProjects.length} projects</p>
+        <div className="film-project-cards">
           {visibleProjects.map(({project,index})=><ProjectCard key={project.name} project={project} index={index} />)}
         </div>
       </div>

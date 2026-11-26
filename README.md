@@ -4,7 +4,10 @@ An interactive, five-scene cinematic portfolio built with React, TypeScript, Vit
 
 ## Verified resume and public case studies
 
-- Public two-page resume: [Dwaraknath Balaji — AI Engineer](public/Dwaraknath_Balaji_AI_Engineer_Resume.pdf) (updated from owner-supplied resume on 23 November 2026).
+- Public two-page resume: [Dwaraknath Balaji — AI Engineer](public/Dwaraknath_Balaji_AI_Engineer_Resume.pdf) (updated from owner-supplied resume on 26 November 2026).
+- **Agent Intelligence** — personal multi-agent research application; local and offline tested, live API validation pending, private source.
+- **JARVIS** — local-first macOS assistant with tool routing, human approval, memory and browser/mock-provider testing; private source.
+- Both flagship case studies use original architecture illustrations, not screenshots or public demos. No private source files are copied.
 - [Driver Drowsiness Detection](https://github.com/Dwaraknath1810/Driver-drowsiness-detection) — original notebook source; training curves extracted from the notebook and stored locally under `public/projects/`.
 - [Sentiment Analysis](https://github.com/Dwaraknath1810/Sentimental-analysis) — public Jupyter notebook.
 - Enterprise AI and agentic workflow case studies use original **conceptual** architecture diagrams only. They do not disclose proprietary software names, private implementation details, or fabricated project screenshots.
@@ -36,7 +39,7 @@ Use the committed `package-lock.json` with `npm ci` for reproducible installatio
 
 ## Personalize the content
 
-Edit `src/data/portfolio.ts` for identity, navigation, expertise, projects, experience, technical capabilities, philosophy, and contact details.
+Edit `src/data/cinematic.ts` for the active site's identity, projects, experience, technical skills and contact details.
 
 The two contact methods are centralized in `contactLinks`:
 

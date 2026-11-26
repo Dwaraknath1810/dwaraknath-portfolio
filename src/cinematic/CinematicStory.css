@@ -882,3 +882,63 @@
 @media (max-width:700px) {
   .film-app[data-theme="light"] .film-hero-actions .film-brief-anchor { background:#fffaf5eb; }
 }
+
+/* Agentic AI portfolio: original artwork, readable status and safe hero composition. */
+.film-hero-description {max-width:46ch;font-size:clamp(13px,1.1vw,17px);line-height:1.7;color:#d5d2dc;margin-top:15px!important}
+.film-project-count {margin-top:17px!important;color:var(--f-muted);font-size:12px}
+.film-project-count + .film-project-cards {margin-top:20px}
+.film-project-card--flagship {border-color:#6ccbdc66}
+.film-project-art-research {background:radial-gradient(ellipse at 55% 45%,#22556899,transparent 61%),linear-gradient(130deg,#0a1b31,#101026)}
+.film-project-art-assistant {background:radial-gradient(circle at 50% 50%,#17636a99,transparent 53%),linear-gradient(145deg,#051d26,#0b111b)}
+.film-project-card--flagship .film-project-glyph {font-size:clamp(40px,6.3vw,88px);color:#d2faff;letter-spacing:-.08em}
+.film-project-card--flagship .film-project-orb {border-color:#82e4ed88}
+.film-project-information .film-project-subtitle {font-size:15px;font-weight:650;color:var(--f-muted);margin-top:8px}
+.film-project-information .film-project-private {font-size:10px;color:#a5d7de;letter-spacing:.09em;margin-top:19px}
+.film-case-list {font-size:13px;line-height:1.75;margin:12px 0 0;padding-left:20px;color:#c5c5d5}
+.film-case-list li+li {margin-top:8px}
+.film-project-diagram img {height:auto}
+.film-project-details summary {min-height:44px;cursor:pointer}
+.film-app a:focus-visible,.film-app button:focus-visible,.film-app summary:focus-visible {outline:2px solid var(--f-red);outline-offset:4px}
+.film-app[data-theme="light"] .film-hero-description,.film-app[data-theme="light"] .film-case-list,.film-app[data-theme="light"] .film-project-detail-content p,.film-app[data-theme="light"] .film-timeline-card p {color:#514758}
+.film-app[data-theme="light"] .film-project-tags span {color:#403a52;border-color:#645b7b66}
+.film-app[data-theme="light"] .film-project-information .film-project-private {color:#285c65}
+.film-app[data-theme="light"] .film-project-information .film-project-result {color:#433346}
+.film-app[data-theme="light"] .film-project-details summary,.film-app[data-theme="light"] .film-project-detail-content h4,.film-app[data-theme="light"] .film-brief-proof-index,.film-app[data-theme="light"] .film-brief-roles li span,.film-app[data-theme="light"] .film-workbench-category,.film-app[data-theme="light"] .film-workbench-usecase>span,.film-app[data-theme="light"] .film-workbench-pipeline-index,.film-app[data-theme="light"] .film-timeline-card>span {color:#853c49}
+.film-app[data-theme="light"] .film-workbench-metric small,.film-app[data-theme="light"] .film-workbench-evidence-head p,.film-app[data-theme="light"] .film-workbench-process-label,.film-app[data-theme="light"] .film-card-number {color:#615068}
+.film-app[data-theme="light"] .film-brief-headline h2 em,.film-app[data-theme="light"] .film-workbench-heading h2 em,.film-app[data-theme="light"] .film-workbench-process-intro h3 em {color:#a43740}
+@media(min-width:901px) {
+  .film-entrance-type {width:55%;padding-right:0}
+  .film-entrance-type h1 {font-size:clamp(46px,6.6vw,125px);letter-spacing:-.075em}
+  .film-title-second {margin-left:0}
+  .film-portrait-wrap {inset:12% -2% 0 54%;height:auto;max-height:none}
+  .film-hero-actions {max-width:530px}
+}
+@media(min-width:701px) and (max-width:1100px) {
+  .film-header {gap:14px;padding-inline:22px}
+  .film-navigation {gap:12px}
+  .film-navigation a {font-size:9px}
+}
+@media(max-width:900px) {
+  .film-entrance {display:flex;flex-direction:column;align-items:stretch;min-height:100svh;padding:0 0 78px}
+  .film-side-label {top:89px;left:20px}
+  .film-entrance-type {position:relative;width:100%;margin:0;padding:128px 20px 0;transform:none!important;opacity:1!important}
+  .film-entrance-type h1 {font-size:clamp(31px,8.8vw,75px);letter-spacing:-.075em;line-height:1.04;margin-top:19px}
+  .film-title-second {margin-left:0}
+  .film-entrance-subtitle {max-width:100%;font-size:clamp(10px,2vw,13px);letter-spacing:.06em;line-height:1.6}
+  .film-hero-description {max-width:55ch;font-size:13px}
+  .film-hero-actions {display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;max-width:100%;gap:8px 15px;margin-top:16px}
+  .film-hero-actions .film-brief-anchor {min-height:44px;font-size:10px;background:transparent;text-shadow:none}
+  .film-app[data-theme="light"] .film-hero-actions .film-brief-anchor {background:transparent}
+  .film-portrait-wrap {position:relative;inset:auto;width:100%;height:clamp(330px,94vw,590px);max-height:none;margin-top:8px;transform:none!important;opacity:1}
+  .film-portrait {object-position:center bottom}
+  .film-entrance-bottom {min-height:74px;padding:16px 20px;gap:10px}
+}
+@media(max-width:430px) {
+  .film-entrance-type {padding-inline:16px}
+  .film-hero-actions .film-resume-link--hero {min-height:44px;flex:0 0 auto}
+  .film-hero-actions .film-brief-anchor {letter-spacing:.055em}
+  .film-hero-description {max-width:32ch}
+  .film-project-information {padding:22px 17px}
+  .film-project-card--flagship .film-project-glyph {font-size:clamp(36px,11vw,54px)}
+}
+@media(prefers-reduced-motion:reduce) {.film-app *, .film-app *::before, .film-app *::after {scroll-behavior:auto!important} .film-entrance-light {animation:none}}

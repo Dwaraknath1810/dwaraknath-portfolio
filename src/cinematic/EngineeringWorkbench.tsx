@@ -35,10 +35,10 @@ export function EngineeringWorkbench() {
             </m.article>
           )}
         </div>
-        <p className="film-workbench-disclosure">The two workspace cards describe tools I am exploring—not verified work deployments. The engineering technologies below come from my professional experience.</p>
+        <p className="film-workbench-disclosure">The two workspace cards describe tools I am exploring—not verified work deployments. The engineering technologies below reflect my professional experience and personal projects.</p>
         <div className="film-workbench-toolhead">
           <div><Layers3 size={19} aria-hidden="true"/><h3>ENGINEERING TOOLCHAIN</h3></div>
-          <p>Applied technologies from my AI engineering work</p>
+          <p>Applied technologies from enterprise and personal AI engineering</p>
         </div>
         <div className="film-workbench-tools">
           {engineeringTools.map((tool,i)=><m.div

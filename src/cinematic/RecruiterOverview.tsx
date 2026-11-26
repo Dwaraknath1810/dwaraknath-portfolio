@@ -5,6 +5,7 @@ import './RecruiterOverview.css'
 
 const resumePath = '/Dwaraknath_Balaji_AI_Engineer_Resume.pdf'
 const publicProjects = featuredProjects.filter(project => project.sourceUrl !== null)
+const personalProjects = featuredProjects.filter(project => project.kind === 'personal')
 const professionalRoles = career.filter(entry => entry.title !== 'B.Tech — Artificial Intelligence and Data Science').slice().reverse()
 
 /**
@@ -51,14 +52,18 @@ export function RecruiterOverview() {
             <div className="film-brief-panel-title"><Code2 size={18} aria-hidden="true" /><h3>ENGINEERING FOCUS</h3></div>
             <div className="film-brief-focus-items">
               <div><strong>Enterprise RAG</strong><span>Document ingestion, vector retrieval, grounded answers</span></div>
-              <div><strong>Agentic AI</strong><span>LangChain, LangGraph, multi-step workflows</span></div>
+              <div><strong>Agentic AI</strong><span>OpenAI Agents SDK, LangGraph, LangChain and multi-agent workflows</span></div>
               <div><strong>LLM evaluation</strong><span>Correctness, source grounding, hallucination and citations</span></div>
-              <div><strong>Backend & cloud</strong><span>Python, FastAPI, AWS, Azure and Docker</span></div>
+              <div><strong>Full-stack AI</strong><span>Python, FastAPI, React, TypeScript, PostgreSQL, SQLite and event streaming</span></div>
               <div><strong>Applied AI delivery</strong><span>Backend integration, access controls, UAT, load testing and resolving retrieval issues</span></div>
             </div>
           </article>
         </div>
 
+        <div className="film-brief-public">
+          <div className="film-brief-public-head"><div><Code2 size={18} aria-hidden="true"/><h3>FLAGSHIP PERSONAL AI PROJECTS</h3></div><p>Independent applications, separate from employer work. Both repositories are private.</p></div>
+          <div className="film-brief-proof-grid">{personalProjects.map(project => <article className="film-brief-proof" key={project.slug}><span className="film-brief-proof-index">PERSONAL AI APPLICATION</span><h4>{project.name}</h4><p>{project.subtitle}. {project.description}</p><strong>{project.result}</strong><a href="#projects">EXPLORE CASE STUDIES <ArrowUpRight size={16} aria-hidden="true"/></a></article>)}</div>
+        </div>
         <div className="film-brief-public">
           <div className="film-brief-public-head">
             <div><ShieldCheck size={18} aria-hidden="true"/><h3>PUBLIC WORK YOU CAN VERIFY</h3></div>
