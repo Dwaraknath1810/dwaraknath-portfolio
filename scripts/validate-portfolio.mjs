@@ -15,6 +15,8 @@ const requiredFiles = [
   'public/Dwaraknath_Balaji_AI_Engineer_Resume.pdf',
   'public/hero-portrait-cutout.webp',
   'public/openai-blossom.svg',
+  'public/projects/agent-intelligence.svg',
+  'public/projects/jarvis.svg',
   'public/projects/enterprise-rag-flow.svg',
   'public/projects/agentic-evaluation-flow.svg',
   'public/projects/driver-drowsiness-flow.svg',
@@ -43,6 +45,9 @@ assert(quickView.includes('featuredProjects.filter'), 'Public project list is no
 assert(quickView.includes('project.sourceUrl'), 'No evidence links in recruiter brief')
 assert(story.includes('Dwaraknath_Balaji_AI_Engineer_Resume.pdf'), 'Resume CTA in opening/finale is missing')
 assert(project.includes('project.diagram'), 'Case-study architecture visual is missing')
+assert(portfolio.includes("slug:'agent-intelligence', kind:'personal'") && portfolio.includes("slug:'jarvis',kind:'personal'"), 'Flagship projects missing')
+assert(story.includes('project.kind===filter'), 'Project filtering must use explicit categories')
+assert(!/github\.com\/Dwaraknath1810\/(?:multi-agent-ai|jarvis)\b/i.test(portfolio), 'Private source links must not be published')
 
 for (const name of ['src/cinematic/CinematicStory.tsx','src/cinematic/RecruiterOverview.tsx','src/cinematic/ProjectCard.tsx','src/data/cinematic.ts','index.html']) {
   assert(!/zara\s*[-_]?\s*(?:lm|chat)/i.test(read(name)), `Private platform name leaked into ${name}`)
