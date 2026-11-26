@@ -942,3 +942,57 @@
   .film-project-card--flagship .film-project-glyph {font-size:clamp(36px,11vw,54px)}
 }
 @media(prefers-reduced-motion:reduce) {.film-app *, .film-app *::before, .film-app *::after {scroll-behavior:auto!important} .film-entrance-light {animation:none}}
+
+/* Light theme parity: keep cinematic geometry and dark mode intact. */
+@media(min-width:701px) {
+ .film-app[data-theme="light"] .film-header .film-navigation {background:transparent;border-color:transparent}
+}
+.film-app[data-theme="light"] .film-navigation a {background:transparent;color:#423a49}
+.film-app[data-theme="light"] .film-navigation a:hover,.film-app[data-theme="light"] .film-navigation a:focus-visible {color:var(--f-red)}
+.film-app[data-theme="light"] .film-hero-actions .film-brief-anchor {background:transparent;border-bottom-color:#a4374070}
+.film-app[data-theme="light"] .film-side-label,.film-app[data-theme="light"] .film-header-label {opacity:.85}
+.film-app[data-theme="light"] .film-scene-navigation-label,.film-app[data-theme="light"] .film-scene-number {color:#67515e}
+.film-app[data-theme="light"] .film-year-readout {color:#382c38;text-shadow:0 8px 26px #70505e20;font-variant-numeric:tabular-nums}
+.film-app[data-theme="light"] .film-clock {background:radial-gradient(circle,#fffaf5b0,#eadfdc60);border-color:#a481765e;box-shadow:0 0 0 24px #a481760b,0 0 0 65px #a4817608,inset 0 0 55px #a4817619}
+.film-app[data-theme="light"] .film-clock::before,.film-app[data-theme="light"] .film-clock::after {border-color:#a4817675}
+.film-app[data-theme="light"] .film-clock-face span {color:#74574c}
+.film-app[data-theme="light"] .film-clock-hand {background:linear-gradient(#c87964,#973943);box-shadow:none}
+.film-app[data-theme="light"] .film-clock-pin {background:#a43740;border-color:#e9c7c0;box-shadow:none}
+.film-app[data-theme="light"] .film-year-buttons button {background:#fffaf5;border-color:#a4827980;color:#473a40}
+.film-app[data-theme="light"] .film-year-buttons button.is-active,.film-app[data-theme="light"] .film-year-buttons button:hover {background:#943d48;color:white;border-color:#943d48}
+.film-app[data-theme="light"] .film-year-buttons button:focus-visible {outline-color:#943d48}
+.film-app[data-theme="light"] .film-timeline-card {padding:26px;border:1px solid #68515b35;border-radius:6px;grid-template-columns:minmax(110px,145px) minmax(0,1fr);gap:20px}
+.film-app[data-theme="light"] .film-timeline-items {grid-template-columns:repeat(2,minmax(0,1fr))}
+.film-app[data-theme="light"] .film-timeline-items:has(> :only-child) {grid-template-columns:minmax(0,1fr)}
+.film-app[data-theme="light"] .film-timeline-items:has(> :only-child) .film-timeline-card {max-width:960px;width:100%}
+.film-app[data-theme="light"] .film-timeline-card .film-timeline-place {color:#615260}
+.film-app[data-theme="light"] .film-universe-summary {max-width:62ch;line-height:1.8;margin-top:28px}
+.film-app[data-theme="light"] .film-skills-board {grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));margin-top:clamp(48px,6vw,90px)}
+.film-app[data-theme="light"] .film-skill-card {min-width:0;min-height:0;padding:24px}
+.film-app[data-theme="light"] .film-skill-card h3 {margin:22px 0 12px;font-weight:700}
+.film-app[data-theme="light"] .film-skill-card p {font-size:13px;line-height:1.75}
+.film-app[data-theme="light"] .film-workbench-feature-top>span,.film-app[data-theme="light"] .film-workbench-tool-copy small,.film-app[data-theme="light"] .film-workbench-evidence-head p {color:#554b59}
+.film-app[data-theme="light"] .film-workbench-feature-2 .film-workbench-brand {color:#974831;background:#f4ddd0;border-color:#a45a4350;box-shadow:none}
+.film-app[data-theme="light"] .film-workbench-tool:hover {background:#f0e5e8;border-color:#a4374066}
+.film-app[data-theme="light"] .film-workbench-toolhead,.film-app[data-theme="light"] .film-workbench-pipeline li:first-child,.film-app[data-theme="light"] .film-accolades span,.film-app[data-theme="light"] .film-finale-foot,.film-app[data-theme="light"] .film-project-details {border-color:#68515b40}
+.film-app[data-theme="light"] .film-workbench-pipeline-arrow,.film-app[data-theme="light"] .film-workbench-toolhead svg,.film-app[data-theme="light"] .film-workbench-evidence-head>svg,.film-app[data-theme="light"] .film-brief-panel-title svg,.film-app[data-theme="light"] .film-brief-public-head svg {color:#963c48}
+.film-app[data-theme="light"] .film-workbench-feature::before {border-color:#68515b22;box-shadow:0 0 0 35px #68515b08,0 0 0 70px #68515b05}
+.film-app[data-theme="light"] .film-project-glare {opacity:.18}
+.film-app[data-theme="light"] .film-project-filters button span {color:#943d48}
+.film-app[data-theme="light"] .film-project-filters button.is-active span,.film-app[data-theme="light"] .film-project-filters button:hover span {color:inherit}
+.film-app[data-theme="light"] .film-project-filters button:hover,.film-app[data-theme="light"] .film-finale-links a:hover,.film-app[data-theme="light"] .film-project-source:hover {background:#f0e2e4;color:#672b38!important;border-color:#943d48}
+.film-app[data-theme="light"] .film-project-filters button.is-active:hover {background:#943d48;color:white!important}
+.film-app[data-theme="light"] .film-accolades span,.film-app[data-theme="light"] .film-finale-foot a {color:#514758}
+.film-app[data-theme="light"] .film-entrance-bottom .film-index {color:#943d48}
+.film-app[data-theme="light"] .film-brief-proof>a {border-color:#943d48}
+.film-app[data-theme="light"] :is(.film-skill-card,.film-project-information,.film-brief-panel,.film-brief-proof,.film-workbench-tool-copy,.film-timeline-card>div) {min-width:0;overflow-wrap:anywhere;word-break:normal;hyphens:manual}
+.film-app[data-theme="light"] :is(.film-universe-summary,.film-hero-description,.film-timeline-card p,.film-project-information p,.film-brief-headline>p,.film-workbench-heading>p,.film-case-list) {text-wrap:pretty;white-space:normal;word-break:normal;overflow-wrap:break-word}
+.film-app[data-theme="light"] :is(.film-skill-card h3,.film-project-information h3,.film-time-head h2,.film-workbench-heading h2,.film-brief-headline h2) {text-wrap:balance;word-break:normal;overflow-wrap:break-word}
+@media(max-width:1100px) {
+ .film-app[data-theme="light"] .film-timeline-items {grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:700px) {
+ .film-app[data-theme="light"] .film-timeline-card {grid-template-columns:minmax(0,1fr);gap:8px;padding:20px}
+ .film-app[data-theme="light"] .film-skills-board {grid-template-columns:minmax(0,1fr)}
+ .film-app[data-theme="light"] .film-header .film-navigation {background:#fffaf5}
+}

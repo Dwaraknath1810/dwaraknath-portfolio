@@ -64,7 +64,8 @@ export function ProjectCard({ project, index }: { project: Project; index: numbe
           {project.stack.map(technology => <span key={technology}>{technology}</span>)}
         </div>
         {project.sourceUrl && <a className="film-project-source" href={project.sourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`View the public GitHub repository for ${project.name}`}>VIEW VERIFIED GITHUB CODE <span aria-hidden="true">↗</span></a>}
-        {project.kind === 'personal' && <p className="film-project-private">PRIVATE SOURCE · CASE STUDY AVAILABLE</p>}
+        {project.restrictedSourceUrl && <a className="film-project-source" href={project.restrictedSourceUrl} target="_blank" rel="noopener noreferrer" aria-label={`Open GitHub repository for ${project.name} (access required)`}>VIEW GITHUB CODE <span aria-hidden="true">↗</span></a>}
+        {project.kind === 'personal' && <p className="film-project-private">PRIVATE REPOSITORY · GITHUB ACCESS REQUIRED</p>}
         <details className="film-project-details">
           <summary>Explore architecture & evidence <span aria-hidden="true">+</span></summary>
           <div className="film-project-detail-content">
